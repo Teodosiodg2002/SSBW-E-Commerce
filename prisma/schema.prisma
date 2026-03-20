@@ -1,0 +1,17 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Producto {
+  id          Int     @id @default(autoincrement())
+  título      String  @db.Char(127)
+  descripción String  @db.Text
+  precio      Decimal
+  imagen      String  @db.Char(127)
+}
