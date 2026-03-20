@@ -6,19 +6,27 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --env-file=.env index.ts",
-    "scrap": "node scrap-tp.js"
+    "scrap": "node scrap-tp.js",
+    "seed": "node --env-file=.env seed.ts",
+    "studio": "npx prisma studio"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "@types/pg": "^8.18.0",
     "express": "^5.2.1",
-    "nunjucks": "^3.2.4"
+    "nunjucks": "^3.2.4",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
     "@types/nunjucks": "^3.2.6",
     "chokidar": "^3.6.0",
-    "playwright": "^1.58.2"
+    "dotenv": "^17.3.1",
+    "playwright": "^1.58.2",
+    "prisma": "^7.5.0"
   }
 }
