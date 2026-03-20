@@ -1,0 +1,43 @@
+{% extends "base.njk" %}
+
+{% block title %}Impresiones – Tienda Prado{% endblock %}
+{% block description %}Catálogo de impresiones del Museo del Prado. Láminas, carteles, postales y más.{% endblock %}
+
+{% block content %}
+  <h1 class="section-title">Impresiones</h1>
+
+  {# Feedback de búsqueda #}
+  {% if busqueda %}
+    <p class="search-results-info text-center">
+      {{ cards | length }} resultado{% if cards | length != 1 %}s{% endif %}
+      para <strong>«{{ busqueda }}»</strong>
+      · <a href="/">Ver todo el catálogo</a>
+    </p>
+  {% endif %}
+
+  {% if cards | length == 0 %}
+    <div class="text-center py-5">
+      <p class="text-muted">No se encontraron productos para «{{ busqueda }}».</p>
+      <a href="/" class="btn btn-outline-secondary btn-sm">Volver al catálogo</a>
+    </div>
+  {% else %}
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+      {% for card in cards %}
+        <div class="col">
+          <a href="/producto/{{ card.id }}" class="text-decoration-none">
+            <div class="product-card">
+              <div class="card-img-wrap">
+                <img src="/public/imagenes/{{ card.imagen }}"
+                     alt="{{ card.título }}"
+                     loading="lazy"
+                     onerror="this.style.display='none'">
+              </div>
+              <p class="card-title">{{ card.título }}</p>
+              <p class="card-price">{{ card.precio | string | replace(".", ",") }} €</p>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

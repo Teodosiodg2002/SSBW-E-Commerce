@@ -1,0 +1,51 @@
+{% extends "base.njk" %}
+
+{% block title %}{{ producto.título }} – Tienda Prado{% endblock %}
+{% block description %}{{ producto.descripción | truncate(160) }}{% endblock %}
+
+{% block content %}
+  <h1 class="section-title">Impresiones</h1>
+
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb" style="font-size:0.82rem;">
+      <li class="breadcrumb-item"><a href="/" class="text-muted text-decoration-none">Impresiones</a></li>
+      <li class="breadcrumb-item active text-muted" aria-current="page">{{ producto.título }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-5">
+    {# Imagen del producto #}
+    <div class="col-md-5">
+      <div class="detail-img-wrap">
+        <img src="/public/imagenes/{{ producto.imagen }}"
+             alt="{{ producto.título }}"
+             onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    {# Detalles del producto #}
+    <div class="col-md-7">
+      <h2 class="detail-title">{{ producto.título }}</h2>
+      <p class="detail-description">{{ producto.descripción }}</p>
+      <p class="detail-price">{{ producto.precio | string | replace(".", ",") }} €</p>
+
+      <div class="d-flex align-items-center gap-3 mt-3">
+        <input type="number" value="1" min="1" max="99"
+               class="form-control text-center"
+               style="width:70px; border-radius:0; border-color:#ccc;"
+               id="quantity-input">
+        <button class="btn btn-add-cart" id="add-to-cart-btn">
+          Añadir a la cesta
+        </button>
+        <a href="#" class="text-muted ms-2" title="Favorito"><i class="bi bi-heart" style="font-size:1.2rem;"></i></a>
+        <a href="#" class="text-muted" title="Compartir"><i class="bi bi-share" style="font-size:1.1rem;"></i></a>
+      </div>
+
+      <div class="mt-4">
+        <a href="/" class="text-muted text-decoration-none" style="font-size:0.85rem;">
+          <i class="bi bi-arrow-left"></i> Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
