@@ -1,6 +1,7 @@
 import express from "express";
 import prisma from "../prisma/prisma.client.ts";
 import logger from "../logger.ts";
+import "../types/session.d.ts";
 
 const router = express.Router();
 
@@ -84,6 +85,25 @@ router.post('/al-carrito/:id', async (req, res) => {
 
     // Volver a la página de detalle del mismo producto
     res.redirect(`/producto/${id}`);
+});
+
+// GET: eliminar producto entero del carrito
+router.get('/quitar-del-carrito/:id', (req, res) => {
+    const id = Number(req.params.id);
+    
+    if (req.session.carrito) {
+        // Filtrar el elemento para removerlo del carrito
+        req.session.carrito = req.session.carrito.filter(item => item.id !== id);
+        
+        // Recalcular total de unidades
+        const total_carrito = req.session.carrito.reduce((acc, item) => acc + item.cantidad, 0);
+        req.session.total_carrito = total_carrito;
+        logger.debug(`Producto #${id} eliminado del carrito. Total actualizado: ${total_carrito}`);
+    }
+
+    // Redirigir a la página desde la que se hizo click (o a inicio como fallback)
+    const referer = req.get('Referrer') || '/';
+    res.redirect(referer);
 });
 
 export default router;
