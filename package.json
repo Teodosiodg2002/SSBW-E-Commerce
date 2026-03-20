@@ -1,0 +1,22 @@
+{
+  "name": "ssbw",
+  "version": "1.0.0",
+  "description": "Práctica de Sistemas Software Basados en la Web",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file=.env index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "@types/nunjucks": "^3.2.6",
+    "chokidar": "^3.6.0"
+  }
+}
