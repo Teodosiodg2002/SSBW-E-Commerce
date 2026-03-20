@@ -17,11 +17,14 @@
     "@prisma/client": "^7.5.0",
     "@types/pg": "^8.18.0",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "nunjucks": "^3.2.4",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/express-session": "^1.18.2",
     "@types/node": "^25.5.0",
     "@types/nunjucks": "^3.2.6",
     "chokidar": "^3.6.0",
