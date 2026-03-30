@@ -8,7 +8,9 @@
     "dev": "node --watch --env-file=.env index.ts",
     "scrap": "node scrap-tp.js",
     "seed": "node --env-file=.env seed.ts",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "migrate": "npx prisma migrate dev",
+    "usuarios": "node --env-file=.env registra_usuarios.ts"
   },
   "author": "",
   "license": "ISC",
