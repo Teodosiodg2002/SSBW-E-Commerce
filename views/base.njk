@@ -91,7 +91,13 @@
             <button class="btn" type="submit"><i class="bi bi-search"></i></button>
           </form>
           <div class="header-icons d-none d-md-flex align-items-center ms-2">
-            <a href="#" title="Mi cuenta"><i class="bi bi-person"></i></a>
+            {# Icono de cuenta: logout si autenticado, login si no #}
+            {% if usuario %}
+              <span class="text-muted me-1" style="font-size:0.78rem; letter-spacing:0.05em;">{{ usuario }}</span>
+              <a href="/logout" title="Cerrar sesión" class="text-muted"><i class="bi bi-box-arrow-right"></i></a>
+            {% else %}
+              <a href="/login" title="Iniciar sesión"><i class="bi bi-person"></i></a>
+            {% endif %}
             {# Icono de carrito con badge de unidades #}
             <a href="#" title="Cesta" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" id="cart-icon" aria-controls="cartDrawer">
               <i class="bi bi-bag"></i>
