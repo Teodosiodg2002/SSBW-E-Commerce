@@ -1,0 +1,56 @@
+# test-api.http — Tarea 7: pruebas de la API REST con REST Client (VS Code)
+#
+# Extensión necesaria: "REST Client" (Huachao Mao) en VS Code.
+# Haz clic en "Send Request" encima de cada petición para ejecutarla.
+# Separa las peticiones con ### para que REST Client las reconozca.
+
+@base = http://localhost:3000
+
+### ── GET todos los productos (por defecto: primeros 20, orden asc) ──
+GET {{base}}/api/productos
+
+### ── GET con paginación y ordenación ──────────────────────────────────
+GET {{base}}/api/productos?desde=0&hasta=5&ordenacion=asc
+
+### ── GET con orden descendente ────────────────────────────────────────
+GET {{base}}/api/productos?desde=0&hasta=5&ordenacion=desc
+
+### ── GET un producto por id ───────────────────────────────────────────
+GET {{base}}/api/productos/1
+
+### ── GET id que no existe (→ 404) ─────────────────────────────────────
+GET {{base}}/api/productos/99999
+
+### ── POST crear producto ──────────────────────────────────────────────
+POST {{base}}/api/productos
+Content-Type: application/json
+
+{
+  "título": "Lámina de prueba",
+  "descripción": "Producto creado desde el test de la API REST.",
+  "precio": 12.50,
+  "imagen": "lamina_prueba.jpg"
+}
+
+### ── PUT actualizar precio y título ───────────────────────────────────
+# Cambia el id por el que devolvió el POST anterior
+PUT {{base}}/api/productos/1
+Content-Type: application/json
+
+{
+  "título": "Título actualizado",
+  "precio": 25.99
+}
+
+### ── PUT sin campos (→ 400) ────────────────────────────────────────────
+PUT {{base}}/api/productos/1
+Content-Type: application/json
+
+{}
+
+### ── DELETE eliminar producto ──────────────────────────────────────────
+# Cambia el id por el que quieras borrar. Responde 204 sin cuerpo.
+DELETE {{base}}/api/productos/999
+
+### ── DELETE id que no existe (→ 404) ───────────────────────────────────
+DELETE {{base}}/api/productos/99999
