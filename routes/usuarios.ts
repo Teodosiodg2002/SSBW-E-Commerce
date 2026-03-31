@@ -18,6 +18,12 @@ import logger from '../logger.ts';
 const router = express.Router();
 const SECRET_KEY = process.env.SECRET_KEY ?? 'dev-secret-prado';
 
+// Panel de cuenta: solo accesible si el usuario está autenticado
+router.get('/mi-cuenta', (req, res) => {
+    if (!res.app.locals.usuario) return res.redirect('/login');
+    res.render('mi-cuenta.njk');
+});
+
 // Muestra el formulario de login
 router.get('/login', (req, res) => {
     res.render('login.njk', { error: false });

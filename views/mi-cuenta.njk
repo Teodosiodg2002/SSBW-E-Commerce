@@ -1,0 +1,50 @@
+{% extends "base.njk" %}
+{# Tarea 6: Autenticación — panel de cuenta del usuario #}
+
+{% block title %}Mi cuenta – Tienda Prado{% endblock %}
+{% block description %}Panel de tu cuenta en la Tienda del Museo del Prado{% endblock %}
+
+{% block content %}
+<h1 style="font-size:1.1rem; font-weight:400; color:#333; margin-bottom:28px;">Mi cuenta</h1>
+
+<div class="row">
+
+  {# ── Sidebar de navegación ── #}
+  <div class="col-md-3">
+    <nav>
+      <ul class="list-unstyled" style="font-size:0.9rem;">
+        <li style="border-bottom:1px solid #e5e5e5;">
+          <a href="#" class="d-block py-3 text-dark text-decoration-none cuenta-link">Datos personales</a>
+        </li>
+        <li style="border-bottom:1px solid #e5e5e5;">
+          <a href="#" class="d-block py-3 text-dark text-decoration-none cuenta-link">Direcciones</a>
+        </li>
+        <li style="border-bottom:1px solid #e5e5e5;">
+          <a href="#" class="d-block py-3 text-dark text-decoration-none cuenta-link">Pedidos</a>
+        </li>
+        <li style="border-bottom:1px solid #e5e5e5;">
+          <a href="#" class="d-block py-3 text-dark text-decoration-none cuenta-link">Devoluciones</a>
+        </li>
+        <li style="border-bottom:1px solid #e5e5e5;">
+          <a href="#" class="d-block py-3 text-dark text-decoration-none cuenta-link">Favoritos</a>
+        </li>
+        <li>
+          <a href="/logout" class="d-block py-3 text-decoration-none cuenta-link" style="color:#800000;">Cerrar sesión</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  {# ── Área principal ── #}
+  <div class="col-md-9">
+    <p style="font-size:0.92rem; color:#555;">
+      Bienvenido/a <strong>{{ usuario }}</strong> a tu panel de cuentas. Elige una sección.
+    </p>
+  </div>
+
+</div>
+
+<style>
+  .cuenta-link:hover { color: #800000 !important; }
+</style>
+{% endblock %}

@@ -91,12 +91,10 @@
             <button class="btn" type="submit"><i class="bi bi-search"></i></button>
           </form>
           <div class="header-icons d-none d-md-flex align-items-center ms-2">
-            {# Icono de cuenta: persona rellena + link a logout si autenticado; persona vacía + login si no #}
-            {% if usuario %}
-              <a href="/logout" title="{{ usuario }} – Cerrar sesión" id="account-icon"><i class="bi bi-person-fill"></i></a>
-            {% else %}
-              <a href="/login" title="Iniciar sesión" id="account-icon"><i class="bi bi-person"></i></a>
-            {% endif %}
+            {# Icono de cuenta: siempre apunta a /mi-cuenta (que redirige a /login si no hay sesión) #}
+            <a href="/mi-cuenta" title="Ver mi cuenta de cliente" id="account-icon">
+              <i class="bi bi-person{% if usuario %}-fill{% endif %}"></i>
+            </a>
             {# Icono de carrito con badge de unidades #}
             <a href="#" title="Cesta" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" id="cart-icon" aria-controls="cartDrawer">
               <i class="bi bi-bag"></i>
