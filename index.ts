@@ -18,6 +18,7 @@ import './types/session.d.ts';
 import prisma from './prisma/prisma.client.ts';
 import ProductosRouter from './routes/productos.ts';
 import UsuariosRouter from './routes/usuarios.ts';
+import ApiRouter from './routes/api.ts';
 
 const app = express();
 const PORT       = process.env.PORT       || 3000;
@@ -103,8 +104,10 @@ app.use(async (req, res, next) => {
 app.use('/public/imagenes', express.static('imagenes'));
 
 // ── Rutas ──────────────────────────────────────────────────────────────
-app.use('/', UsuariosRouter);   // /login, /logout
+app.use(express.json());        // parsear body JSON para la API REST
+app.use('/', UsuariosRouter);   // /login, /logout, /mi-cuenta
 app.use('/', ProductosRouter);  // /, /buscar, /producto/:id, /al-carrito/:id
+app.use('/', ApiRouter);        // /api/productos (CRUD + paginación)
 
 app.listen(PORT, () => {
     logger.info(`Servidor iniciado en http://localhost:${PORT}`);
