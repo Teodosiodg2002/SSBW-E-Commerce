@@ -1,11 +1,21 @@
-import express from "express";
-import prisma from "../prisma/prisma.client.ts";
-import logger from "../logger.ts";
-import "../types/session.d.ts";
+/**
+ * routes/productos.ts — Tarea 4 (tienda) + Tarea 5 (carrito)
+ *
+ * Controlador de la tienda. Gestiona:
+ *   GET  /                   → portada con todos los productos
+ *   GET  /buscar?busqueda=   → filtrado por texto en título o descripción
+ *   GET  /producto/:id       → página de detalle de un producto
+ *   POST /al-carrito/:id     → añadir producto a la sesión de carrito
+ *   GET  /quitar-del-carrito/:id → eliminar producto de la sesión de carrito
+ */
+import express from 'express';
+import prisma from '../prisma/prisma.client.ts';
+import logger from '../logger.ts';
+import '../types/session.d.ts';
 
 const router = express.Router();
 
-// Portada: lista de productos sin descripción
+// Portada: muestra todos los productos (sin descripción para no cargar datos innecesarios)
 router.get('/', async (req, res) => {
     try {
         const cards = await prisma.producto.findMany({
@@ -19,14 +29,14 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Búsqueda por texto en título y descripción
+// Búsqueda: filtra por texto en título o descripción, sin distinción de mayúsculas/minúsculas
 router.get('/buscar', async (req, res) => {
     const busqueda = (req.query.busqueda as string) || '';
     try {
         const cards = await prisma.producto.findMany({
             where: {
                 OR: [
-                    { título: { contains: busqueda, mode: 'insensitive' } },
+                    { título:      { contains: busqueda, mode: 'insensitive' } },
                     { descripción: { contains: busqueda, mode: 'insensitive' } }
                 ]
             },
@@ -41,15 +51,12 @@ router.get('/buscar', async (req, res) => {
     }
 });
 
-// Detalle de producto por ID
+// Detalle: muestra todos los campos de un producto, incluyendo la descripción completa
 router.get('/producto/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     try {
         const producto = await prisma.producto.findUnique({ where: { id } });
-        if (!producto) {
-            res.status(404).send('Producto no encontrado');
-            return;
-        }
+        if (!producto) return res.status(404).send('Producto no encontrado');
         res.render('detalle.njk', { producto });
     } catch (error: any) {
         logger.error(`Detalle id=${id}: ${error.message}`);
@@ -57,53 +64,39 @@ router.get('/producto/:id', async (req, res) => {
     }
 });
 
-// POST: añadir al carrito (desde el formulario de detalle)
-router.post('/al-carrito/:id', async (req, res) => {
-    const id = Number(req.params.id);
+// Añadir al carrito: guarda {id, cantidad} en la sesión del usuario.
+// Si el producto ya existe, acumula la cantidad en lugar de duplicar.
+router.post('/al-carrito/:id', (req, res) => {
+    const id       = Number(req.params.id);
     const cantidad = Number(req.body.cantidad);
-    logger.debug(`Al carrito: producto #${id}, cantidad=${cantidad}`);
 
     if (cantidad > 0) {
-        if (req.session.carrito !== undefined) {
-            // Si el producto ya está en el carrito, incrementar cantidad
-            const existente = req.session.carrito.find(item => item.id === id);
-            if (existente) {
-                existente.cantidad += cantidad;
-            } else {
-                req.session.carrito.push({ id, cantidad });
-            }
+        req.session.carrito ??= [];
+        const existente = req.session.carrito.find(item => item.id === id);
+        if (existente) {
+            existente.cantidad += cantidad;
         } else {
-            req.session.carrito = [{ id, cantidad }];
+            req.session.carrito.push({ id, cantidad });
         }
-
-        // Calcular total de unidades
-        const total_carrito = req.session.carrito.reduce((acc, item) => acc + item.cantidad, 0);
-        req.session.total_carrito = total_carrito;
-        res.locals.total_carrito = total_carrito;
-        logger.debug(`Carrito actualizado: ${total_carrito} unidad(es) en total`);
+        req.session.total_carrito = req.session.carrito.reduce((acc, i) => acc + i.cantidad, 0);
+        logger.debug(`Carrito: +${cantidad} del producto #${id} → total ${req.session.total_carrito}`);
     }
 
-    // Volver a la página de detalle del mismo producto
     res.redirect(`/producto/${id}`);
 });
 
-// GET: eliminar producto entero del carrito
+// Quitar del carrito: elimina el producto de la sesión y recalcula el total
 router.get('/quitar-del-carrito/:id', (req, res) => {
     const id = Number(req.params.id);
-    
+
     if (req.session.carrito) {
-        // Filtrar el elemento para removerlo del carrito
-        req.session.carrito = req.session.carrito.filter(item => item.id !== id);
-        
-        // Recalcular total de unidades
-        const total_carrito = req.session.carrito.reduce((acc, item) => acc + item.cantidad, 0);
-        req.session.total_carrito = total_carrito;
-        logger.debug(`Producto #${id} eliminado del carrito. Total actualizado: ${total_carrito}`);
+        req.session.carrito       = req.session.carrito.filter(i => i.id !== id);
+        req.session.total_carrito = req.session.carrito.reduce((acc, i) => acc + i.cantidad, 0);
+        logger.debug(`Carrito: eliminado producto #${id} → total ${req.session.total_carrito}`);
     }
 
-    // Redirigir a la página desde la que se hizo click (o a inicio como fallback)
-    const referer = req.get('Referrer') || '/';
-    res.redirect(referer);
+    // Volver a la página anterior (o a la portada si no hay referrer)
+    res.redirect(req.get('Referrer') || '/');
 });
 
 export default router;

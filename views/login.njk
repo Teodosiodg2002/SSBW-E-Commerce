@@ -1,41 +1,89 @@
 {% extends "base.njk" %}
+{# Tarea 6: Autenticación — formulario de inicio de sesión #}
 
 {% block title %}Iniciar sesión – Tienda Prado{% endblock %}
 {% block description %}Accede a tu cuenta de la Tienda del Museo del Prado{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-  <div class="col-sm-10 col-md-7 col-lg-5">
+<div class="row justify-content-center mt-4">
+  <div class="col-sm-11 col-md-8 col-lg-6">
 
-    <h1 class="section-title mb-1">Mi cuenta</h1>
-    <p class="text-center text-muted mb-4" style="font-size:0.9rem;">Introduce tus datos para acceder.</p>
+    <h1 style="font-size:1.15rem; font-weight:400; margin-bottom:24px; color:#333;">
+      Inicia sesión con tu cuenta
+    </h1>
 
     {% if error %}
-    <div class="alert alert-danger text-center py-2" style="font-size:0.88rem; border-radius:0;">
+    <div class="alert alert-danger py-2 mb-3" style="font-size:0.85rem; border-radius:0; border-color:#c00; background:#fff0f0; color:#c00;">
       <i class="bi bi-exclamation-circle me-1"></i>
-      Credenciales incorrectas. Por favor, inténtalo de nuevo.
+      Correo o contraseña incorrectos. Inténtalo de nuevo.
     </div>
     {% endif %}
 
-    <form action="/login" method="POST" class="mt-3">
-      <div class="mb-3">
-        <label for="email" class="form-label" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase;">Correo electrónico</label>
-        <input type="email" id="email" name="email" class="form-control" style="border-radius:0;"
-               required autofocus placeholder="tu@email.com">
+    <form action="/login" method="POST" style="border:1px solid #ddd; padding:28px 32px;">
+
+      <div class="mb-0" style="border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:16px;">
+        <label for="email" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px;">
+          Correo electrónico
+        </label>
+        <input type="email" id="email" name="email"
+               class="form-control border-0 p-0 shadow-none"
+               style="font-size:0.95rem;" required autofocus>
       </div>
-      <div class="mb-4">
-        <label for="contraseña" class="form-label" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase;">Contraseña</label>
-        <input type="password" id="contraseña" name="contraseña" class="form-control" style="border-radius:0;"
-               required placeholder="••••••••">
+
+      <div class="mb-0" style="padding-bottom:12px;">
+        <label for="contraseña" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px;">
+          Contraseña
+        </label>
+        <div class="d-flex align-items-center">
+          <input type="password" id="contraseña" name="contraseña"
+                 class="form-control border-0 p-0 shadow-none flex-grow-1"
+                 style="font-size:0.95rem;" required>
+          <button type="button" class="btn btn-link p-0 ms-2 text-muted"
+                  onclick="togglePass()" title="Mostrar contraseña" id="toggle-pass-btn">
+            <i class="bi bi-eye-slash" id="eye-icon"></i>
+          </button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-add-cart w-100" id="login-btn">
+    </form>
+
+    <div class="text-center mt-3" style="font-size:0.85rem;">
+      <a href="#" class="text-muted text-decoration-none">¿Has olvidado tu contraseña?</a>
+    </div>
+
+    <form action="/login" method="POST" class="mt-3" id="login-submit-form">
+      <input type="hidden" name="email" id="hidden-email">
+      <input type="hidden" name="contraseña" id="hidden-pass">
+      <button type="button" class="btn btn-add-cart w-100" id="login-btn"
+              onclick="submitLogin()">
         Iniciar sesión
       </button>
     </form>
 
-    <p class="text-center mt-4" style="font-size:0.82rem; color:#aaa;">
-      © Museo Nacional del Prado
-    </p>
+    <div class="text-center mt-3" style="font-size:0.85rem;">
+      <a href="#" class="text-muted text-decoration-none">¿No tienes una cuenta? Créala aquí ›</a>
+    </div>
   </div>
 </div>
+
+<script>
+  // Inyectar valores del formulario de campos visibles al formulario de envío
+  function submitLogin() {
+    document.getElementById('hidden-email').value    = document.getElementById('email').value;
+    document.getElementById('hidden-pass').value     = document.getElementById('contraseña').value;
+    document.getElementById('login-submit-form').submit();
+  }
+
+  // Mostrar/ocultar contraseña
+  function togglePass() {
+    const input = document.getElementById('contraseña');
+    const icon  = document.getElementById('eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'bi bi-eye';
+    } else {
+      input.type = 'password';
+      icon.className = 'bi bi-eye-slash';
+    }
+  }
+</script>
 {% endblock %}
