@@ -1,16 +1,46 @@
+# docker-compose.yml
+#
+# Levanta el stack completo: base de datos + aplicación.
+#
+# Uso rápido:
+#   docker compose up -d          → arranca todo
+#   docker compose exec app npx prisma migrate deploy
+#   docker compose exec app node --env-file=.env seed.ts
+
 services:
+
+  # ── PostgreSQL ────────────────────────────────────────────────────────
   postgres:
     image: postgres:alpine
     container_name: ssbw_postgres
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
+    env_file: .env                  # lee POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Aplicación Node.js ────────────────────────────────────────────────
+  app:
+    build: .
+    image: ghcr.io/teodosiodg2002/ssbw-e-commerce:latest
+    container_name: ssbw_app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Sobrescribir la URL de BD para apuntar al servicio "postgres" interno
+      # (en Docker, los servicios se resuelven por nombre, no por localhost)
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy   # espera a que postgres esté listo
 
 volumes:
   postgres_data:
