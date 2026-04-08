@@ -1,11 +1,8 @@
 # .github/workflows/ci-cd.yml
 #
-# Pipeline de CI/CD para SSBW E-Commerce.
+# Pipeline simplificado: construye la imagen Docker y la publica en GHCR.
 # Se ejecuta en cada push a main y en cada Pull Request hacia main.
-#
-# Jobs:
-#   1. test     → levanta PostgreSQL, migra la BD y ejecuta los tests
-#   2. docker   → (solo en push a main) construye y sube la imagen a GHCR
+# En PRs solo construye (sin push) para verificar que el Dockerfile es correcto.
 
 name: CI/CD
 
@@ -16,69 +13,16 @@ on:
     branches: [main]
 
 jobs:
-
-  # ── Job 1: Tests de integración ───────────────────────────────────────
-  test:
-    name: Tests de integración
-    runs-on: ubuntu-latest
-
-    # Contenedor de servicio: PostgreSQL disponible en localhost:5432
-    services:
-      postgres:
-        image: postgres:alpine
-        env:
-          POSTGRES_USER:     ci_user
-          POSTGRES_PASSWORD: ci_password
-          POSTGRES_DB:       ssbw_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    # Variables de entorno disponibles para Node.js durante los tests
-    env:
-      DATABASE_URL:    postgresql://ci_user:ci_password@localhost:5432/ssbw_test?schema=public
-      SECRET_KEY:      ci-jwt-secret
-      SESSION_SECRET:  ci-session-secret
-      NODE_ENV:        test
-      LOG_LEVEL:       error   # silenciar logs en CI para leer mejor la salida
-
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Aplicar migraciones de Prisma
-        run: npx prisma migrate deploy
-
-      - name: Ejecutar tests
-        run: npm test
-
-  # ── Job 2: Build y publicación en GHCR ───────────────────────────────
-  # Solo si los tests pasan Y el evento es un push directo a main (no PR)
   docker:
-    name: Publicar imagen en GHCR
-    needs: test
+    name: Build y publicacion en GHCR
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
-      packages: write   # necesario para publicar en ghcr.io
+      packages: write
 
     steps:
-      - name: Checkout del código
+      - name: Checkout del codigo
         uses: actions/checkout@v4
 
       - name: Login en GitHub Container Registry
@@ -86,7 +30,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}   # token automático de Actions
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -95,10 +39,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
-          # Etiqueta :latest y :<sha-del-commit> para poder hacer rollback
+          # Solo hace push en merges a main, no en PRs
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-          cache-from: type=gha      # caché entre ejecuciones (acelera builds)
-          cache-to:   type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

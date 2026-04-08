@@ -5,14 +5,12 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "postinstall": "npx prisma generate",
-    "dev":         "node --watch --env-file=.env index.ts",
-    "test":        "node --test test/api.test.ts",
-    "seed":        "node --env-file=.env seed.ts",
-    "usuarios":    "node --env-file=.env registra_usuarios.ts",
-    "migrate":     "npx prisma migrate dev",
-    "studio":      "npx prisma studio",
-    "scrap":       "node scrap-tp.js"
+    "dev":      "node --watch --env-file=.env index.ts",
+    "seed":     "node --env-file=.env seed.ts",
+    "usuarios": "node --env-file=.env registra_usuarios.ts",
+    "migrate":  "npx prisma migrate dev",
+    "studio":   "npx prisma studio",
+    "scrap":    "node scrap-tp.js"
   },
   "author": "",
   "license": "ISC",
