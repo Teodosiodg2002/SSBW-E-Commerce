@@ -57,8 +57,8 @@ describe('POST /api/productos', () => {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                título:      'Producto de prueba CI',
-                descripción: 'Creado automáticamente por test de integración',
+                titulo:      'Producto de prueba CI',
+                descripcion: 'Creado automaticamente por test de integracion',
                 precio:      9.99,
                 imagen:      'test_ci.jpg'
             })
