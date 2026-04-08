@@ -1,7 +1,7 @@
 {
   "name": "ssbw",
   "version": "1.0.0",
-  "description": "Práctica de Sistemas Software Basados en la Web",
+  "description": "Tienda Prado - SSBW",
   "main": "index.ts",
   "type": "module",
   "scripts": {

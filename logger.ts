@@ -1,26 +1,12 @@
-/**
- * logger.ts — Tarea 5: Logger
- *
- * Configura Winston con tres canales de salida:
- *  - Consola (nivel debug): mensajes con colores para desarrollo.
- *  - logs/info.log  (nivel info):  registro general en producción.
- *  - logs/error.log (nivel error): solo errores críticos.
- *
- * Uso:
- *   import logger from './logger.ts'
- *   logger.debug('Mensaje de depuración')
- *   logger.info('Evento relevante')
- *   logger.error('Algo salió mal')
- */
+// logger.ts — Configuracion de Winston
 import winston from 'winston';
 
 const { combine, timestamp, printf, colorize, align, json } = winston.format;
 
 const logger = winston.createLogger({
-    // LOG_LEVEL en .env permite cambiar el nivel sin tocar código
     level: process.env.LOG_LEVEL || 'info',
     transports: [
-        // Consola: formato legible con colores, ideal en desarrollo
+        // Consola: formato legible con colores
         new winston.transports.Console({
             level: 'debug',
             format: combine(
@@ -30,13 +16,13 @@ const logger = winston.createLogger({
                 printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
             )
         }),
-        // Archivo de log general (info y superiores)
+        // Archivo de log general
         new winston.transports.File({
             filename: './logs/info.log',
             level: 'info',
             format: combine(timestamp(), json()),
         }),
-        // Archivo exclusivo de errores
+        // Archivo solo de errores
         new winston.transports.File({
             filename: './logs/error.log',
             level: 'error',
