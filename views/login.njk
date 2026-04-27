@@ -19,45 +19,52 @@
     </div>
     {% endif %}
 
-    <form action="/login" method="POST" style="border:1px solid #ddd; padding:28px 32px;">
-
-      <div class="mb-0" style="border-bottom:1px solid #ddd; padding-bottom:16px; margin-bottom:16px;">
-        <label for="email" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px;">
+    <form action="/login" method="POST" id="login-form" style="border:1px solid #ddd; padding:28px 32px;" novalidate>
+      <div class="mb-3" style="border-bottom:1px solid #ddd; padding-bottom:16px;">
+        <label for="email" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px; cursor:pointer;">
           Correo electrónico
         </label>
         <input type="email" id="email" name="email"
                class="form-control border-0 p-0 shadow-none"
-               style="font-size:0.95rem;" required autofocus>
+               placeholder="ejemplo@correo.es"
+               style="font-size:0.95rem;" 
+               required autofocus 
+               autocomplete="email" 
+               spellcheck="false">
+        <div id="email-error" class="text-danger mt-1 d-none" style="font-size: 0.75rem;">
+          Introduce un correo electrónico válido.
+        </div>
       </div>
 
-      <div class="mb-0" style="padding-bottom:12px;">
-        <label for="contraseña" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px;">
+      <div class="mb-4">
+        <label for="contraseña" style="font-size:0.8rem; color:#888; display:block; margin-bottom:4px; cursor:pointer;">
           Contraseña
         </label>
         <div class="d-flex align-items-center">
           <input type="password" id="contraseña" name="contraseña"
                  class="form-control border-0 p-0 shadow-none flex-grow-1"
-                 style="font-size:0.95rem;" required>
+                 placeholder="••••••••"
+                 style="font-size:0.95rem;" 
+                 required 
+                 autocomplete="current-password">
           <button type="button" class="btn btn-link p-0 ms-2 text-muted"
                   onclick="togglePass()" title="Mostrar contraseña" id="toggle-pass-btn">
             <i class="bi bi-eye-slash" id="eye-icon"></i>
           </button>
         </div>
+        <div id="pass-error" class="text-danger mt-1 d-none" style="font-size: 0.75rem;">
+          La contraseña es obligatoria.
+        </div>
       </div>
+
+      <button type="submit" class="btn btn-add-cart w-100 py-2" id="login-btn">
+        Acceder a mi cuenta
+      </button>
     </form>
 
     <div class="text-center mt-3" style="font-size:0.85rem;">
       <a href="#" class="text-muted text-decoration-none">¿Has olvidado tu contraseña?</a>
     </div>
-
-    <form action="/login" method="POST" class="mt-3" id="login-submit-form">
-      <input type="hidden" name="email" id="hidden-email">
-      <input type="hidden" name="contraseña" id="hidden-pass">
-      <button type="button" class="btn btn-add-cart w-100" id="login-btn"
-              onclick="submitLogin()">
-        Iniciar sesión
-      </button>
-    </form>
 
     <div class="text-center mt-3" style="font-size:0.85rem;">
       <a href="#" class="text-muted text-decoration-none">¿No tienes una cuenta? Créala aquí ›</a>
@@ -66,12 +73,49 @@
 </div>
 
 <script>
-  // Inyectar valores del formulario de campos visibles al formulario de envío
-  function submitLogin() {
-    document.getElementById('hidden-email').value    = document.getElementById('email').value;
-    document.getElementById('hidden-pass').value     = document.getElementById('contraseña').value;
-    document.getElementById('login-submit-form').submit();
+  const loginForm = document.getElementById('login-form');
+  const emailInput = document.getElementById('email');
+  const passInput = document.getElementById('contraseña');
+
+  // Validación on blur
+  emailInput.addEventListener('blur', () => {
+    validateEmail();
+  });
+
+  passInput.addEventListener('blur', () => {
+    validatePass();
+  });
+
+  function validateEmail() {
+    const errorDiv = document.getElementById('email-error');
+    const isValid = emailInput.checkValidity();
+    if (!isValid) {
+      errorDiv.classList.remove('d-none');
+      return false;
+    } else {
+      errorDiv.classList.add('d-none');
+      return true;
+    }
   }
+
+  function validatePass() {
+    const errorDiv = document.getElementById('pass-error');
+    if (passInput.value.trim() === '') {
+      errorDiv.classList.remove('d-none');
+      return false;
+    } else {
+      errorDiv.classList.add('d-none');
+      return true;
+    }
+  }
+
+  loginForm.addEventListener('submit', (e) => {
+    const isEmailValid = validateEmail();
+    const isPassValid = validatePass();
+    if (!isEmailValid || !isPassValid) {
+      e.preventDefault();
+    }
+  });
 
   // Mostrar/ocultar contraseña
   function togglePass() {
@@ -80,9 +124,11 @@
     if (input.type === 'password') {
       input.type = 'text';
       icon.className = 'bi bi-eye';
+      icon.parentElement.title = 'Ocultar contraseña';
     } else {
       input.type = 'password';
       icon.className = 'bi bi-eye-slash';
+      icon.parentElement.title = 'Mostrar contraseña';
     }
   }
 </script>

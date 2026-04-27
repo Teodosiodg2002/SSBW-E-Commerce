@@ -142,40 +142,150 @@
       <h5 class="offcanvas-title" id="cartDrawerLabel">Cesta</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
     </div>
-    <div class="offcanvas-body d-flex flex-column">
-      {% if carrito and carrito | length > 0 %}
-        <div class="flex-grow-1 overflow-auto">
-          {% for item in carrito %}
-            <div class="cart-item">
-              <img src="/public/imagenes/{{ item.imagen }}"
-                   alt="{{ item.título }}"
-                   onerror="this.style.display='none'">
-              <div class="flex-grow-1">
-                <div class="cart-item-name">{{ item.título }}</div>
-                <div class="cart-item-price">{{ item.cantidad }} x {{ item.precio_str }} €</div>
-              </div>
-              <a href="/quitar-del-carrito/{{ item.id }}" title="Eliminar" style="color:#aaa; font-size:1.1rem;">
-                <i class="bi bi-trash"></i>
-              </a>
-            </div>
-          {% endfor %}
+    <div class="offcanvas-body d-flex flex-column" id="cart-container">
+      {# Se rellena dinámicamente con JS #}
+      <div class="text-center py-5 loading-spinner">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Cargando...</span>
         </div>
-        <div class="cart-totals mt-auto">
-          <div class="total-row"><span>{{ total_carrito }} artículo{% if total_carrito != 1 %}s{% endif %}</span><span>{{ subtotal_str }} €</span></div>
-          <div class="total-row"><span>Envío</span><span>Gratis</span></div>
-          <div class="total-row grand"><span>Total</span><span>{{ subtotal_str }} €</span></div>
-        </div>
-        <button class="btn-checkout">Finalizar pedido</button>
-        <a href="#" class="btn-see-cart">Ver Cesta</a>
-      {% else %}
-        <div class="text-center text-muted py-5">
-          <i class="bi bi-bag" style="font-size:2.5rem; opacity:0.3;"></i>
-          <p class="mt-3">Tu cesta está vacía.</p>
-        </div>
-      {% endif %}
+      </div>
     </div>
   </div>
 
+  {# Template para cada ítem del carrito #}
+  <template id="cart-item-template">
+    <div class="cart-item" data-id="">
+      <img src="" alt="" class="item-img">
+      <div class="flex-grow-1">
+        <div class="cart-item-name item-title"></div>
+        <div class="cart-item-price"><span class="item-qty"></span> x <span class="item-price"></span> €</div>
+      </div>
+      <button class="btn p-0 border-0 btn-remove-item" style="color:#aaa; font-size:1.1rem;">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </template>
+
+  {# Template para el resumen del carrito #}
+  <template id="cart-summary-template">
+    <div class="flex-grow-1 overflow-auto" id="cart-items-list">
+      <!-- Los ítems se insertan aquí -->
+    </div>
+    <div class="cart-totals mt-auto" id="cart-totals">
+      <div class="total-row"><span id="summary-items-count"></span><span><span id="summary-subtotal"></span> €</span></div>
+      <div class="total-row"><span>Envío</span><span>Gratis</span></div>
+      <div class="total-row grand"><span>Total</span><span><span id="summary-total"></span> €</span></div>
+    </div>
+    <button class="btn-checkout">Finalizar pedido</button>
+    <a href="#" class="btn-see-cart">Ver Cesta</a>
+  </template>
+
+  {# Template para carrito vacío #}
+  <template id="cart-empty-template">
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-bag" style="font-size:2.5rem; opacity:0.3;"></i>
+      <p class="mt-3">Tu cesta está vacía.</p>
+    </div>
+  </template>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    /**
+     * Gestión del Carrito vía DOM y AJAX
+     */
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartContainer = document.getElementById('cart-container');
+    const cartBadge = document.querySelector('.cart-badge');
+    const cartIconLink = document.getElementById('cart-icon');
+
+    // Cargar el carrito cuando se abre el offcanvas
+    cartDrawer.addEventListener('show.bs.offcanvas', () => {
+      renderCart();
+    });
+
+    /**
+     * Obtiene los datos de la API y renderiza el contenido
+     */
+    async function renderCart() {
+      try {
+        const response = await fetch('/api/carrito');
+        const data = await response.json();
+        
+        cartContainer.innerHTML = ''; // Limpiar el contenedor (quitar spinner)
+
+        if (data.productos.length === 0) {
+          const template = document.getElementById('cart-empty-template');
+          cartContainer.appendChild(template.content.cloneNode(true));
+          updateBadge(0);
+        } else {
+          const summaryTemplate = document.getElementById('cart-summary-template');
+          const summaryClone = summaryTemplate.content.cloneNode(true);
+          
+          const list = summaryClone.getElementById('cart-items-list');
+          const itemTemplate = document.getElementById('cart-item-template');
+
+          data.productos.forEach(prod => {
+            const itemClone = itemTemplate.content.cloneNode(true);
+            const itemDiv = itemClone.querySelector('.cart-item');
+            
+            itemDiv.dataset.id = prod.id;
+            itemClone.querySelector('.item-img').src = `/public/imagenes/${prod.imagen}`;
+            itemClone.querySelector('.item-img').alt = prod.titulo;
+            itemClone.querySelector('.item-title').textContent = prod.titulo;
+            itemClone.querySelector('.item-qty').textContent = prod.cantidad;
+            itemClone.querySelector('.item-price').textContent = prod.precio_str;
+
+            // Botón de eliminar
+            itemClone.querySelector('.btn-remove-item').onclick = () => removeItem(prod.id);
+
+            list.appendChild(itemClone);
+          });
+
+          summaryClone.getElementById('summary-items-count').textContent = `${data.total_items} artículo${data.total_items !== 1 ? 's' : ''}`;
+          summaryClone.getElementById('summary-subtotal').textContent = data.subtotal;
+          summaryClone.getElementById('summary-total').textContent = data.subtotal;
+
+          cartContainer.appendChild(summaryClone);
+          updateBadge(data.total_items);
+        }
+      } catch (error) {
+        console.error('Error al cargar el carrito:', error);
+        cartContainer.innerHTML = '<div class="alert alert-danger mx-3 mt-3">Error al conectar con la tienda.</div>';
+      }
+    }
+
+    /**
+     * Elimina un ítem mediante AJAX
+     */
+    async function removeItem(id) {
+      try {
+        const response = await fetch(`/api/carrito/${id}`, { method: 'DELETE' });
+        const data = await response.json();
+        if (data.success) {
+          renderCart(); // Re-renderizar
+        }
+      } catch (error) {
+        console.error('Error al eliminar ítem:', error);
+      }
+    }
+
+    /**
+     * Actualiza el contador (badge) del header
+     */
+    function updateBadge(total) {
+      let badge = document.querySelector('.cart-badge');
+      if (total > 0) {
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'cart-badge';
+          cartIconLink.appendChild(badge);
+        }
+        badge.textContent = total;
+      } else if (badge) {
+        badge.remove();
+      }
+    }
+  </script>
 </body>
 </html>

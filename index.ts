@@ -10,6 +10,7 @@ import prisma from './prisma/prisma.client.ts';
 import ProductosRouter from './routes/productos.ts';
 import UsuariosRouter from './routes/usuarios.ts';
 import ApiRouter from './routes/api.ts';
+import CarritoRouter from './routes/carrito.ts';
 
 const app = express();
 const PORT       = process.env.PORT       || 3000;
@@ -91,6 +92,7 @@ app.use('/public/imagenes', express.static('imagenes'));
 app.use('/', UsuariosRouter);
 app.use('/', ProductosRouter);
 app.use('/', ApiRouter);
+app.use('/', CarritoRouter);
 
 app.listen(PORT, () => {
     logger.info(`Servidor en http://localhost:${PORT}`);
