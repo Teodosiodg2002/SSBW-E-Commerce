@@ -4,6 +4,7 @@ import nunjucks from 'nunjucks';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
 import logger from './logger.ts';
 import './types/session.d.ts';
 import prisma from './prisma/prisma.client.ts';
@@ -20,6 +21,7 @@ const SECRET_KEY = process.env.SECRET_KEY ?? 'dev-secret-prado';
 nunjucks.configure('views', { autoescape: true, express: app, watch: true });
 
 // Middlewares
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());

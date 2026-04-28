@@ -1,105 +1,85 @@
-# Tienda Prado — SSBW
+# 🏛️ Tienda Prado - E-Commerce de Arte
 
-Clon de la [Tienda del Museo del Prado](https://www.tiendaprado.com/) para la asignatura de Sistemas Software Basados en la Web.
+¡Bienvenido a **Tienda Prado**! Esta es una aplicación de comercio electrónico evolutiva inspirada en la tienda del Museo del Prado. El proyecto ha pasado de ser un servidor sencillo a una plataforma moderna con arquitectura desacoplada (Backend + Frontend).
 
-## Tareas implementadas
+## 🚀 ¿Cómo funciona la aplicación?
 
-| Tarea | Descripcion |
-|-------|------------|
-| 1 | Servidor Express + Nunjucks |
-| 2 | Web scraping con Playwright |
-| 3 | Base de datos PostgreSQL + Prisma |
-| 4 | Portada, busqueda y detalle |
-| 5 | Logger (Winston) y carrito |
-| 6 | Autenticacion JWT |
-| 7 | API REST para productos |
+La aplicación se basa en una arquitectura **Full-stack** que combina dos mundos:
 
-## Como ejecutar
+1.  **El Núcleo (Backend):** Un servidor robusto construido con **Node.js, Express y Prisma**. Se encarga de la lógica de negocio, la seguridad (JWT) y la gestión de la base de datos PostgreSQL.
+2.  **La Interfaz (Frontend):** 
+    *   Una interfaz clásica servida con **Nunjucks** para la tienda principal.
+    *   Una **SPA (Single Page Application)** moderna construida con **React, Vite y Tailwind CSS** para experiencias de usuario de alta velocidad.
 
-**Requisitos:** Node.js 24+, Docker Desktop, Git.
+---
 
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/Teodosiodg2002/SSBW-E-Commerce.git
-cd SSBW-E-Commerce/SSBW
+## 📈 Evolución y Mejoras (Hitos del Proyecto)
 
-# 2. Instalar dependencias
+El proyecto ha crecido tarea a tarea, incorporando las mejores prácticas de la industria:
+
+### 🛠️ Tarea 7: Estandarización con API REST
+*   **Qué se hizo:** Creamos una interfaz de comunicación estándar (API).
+*   **Beneficio:** Ahora el servidor no solo sirve páginas web, sino que puede enviar datos crudos (JSON) a cualquier otra aplicación (como un móvil o nuestra nueva SPA).
+
+### ✨ Tarea 8: Experiencia de Usuario (UX) y DOM
+*   **Qué se hizo:** Mejoramos el login con validaciones inteligentes y transformamos el carrito para que funcione sin recargar la página.
+*   **Beneficio:** La navegación se siente mucho más fluida. El usuario puede añadir o quitar productos y ver los cambios al instante, eliminando la fricción de esperar a que la página cargue.
+
+### ⚛️ Tarea 9: El Salto a React (SPA)
+*   **Qué se hizo:** Introdujimos un frontal independiente con **React** y **Vite**, consumiendo datos mediante **CORS** y la librería **SWR**.
+*   **Beneficio:** Separamos totalmente la "cara" de la aplicación del "cerebro". Usar componentes de React nos permite crear interfaces mucho más complejas y reactivas de forma organizada, mientras que **Tailwind CSS** nos da un diseño premium y adaptado a móviles.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+*   **Lenguaje:** TypeScript (Tipado fuerte para evitar errores).
+*   **Backend:** Express.js, Prisma ORM, JWT (Autenticación).
+*   **Frontend:** Nunjucks (Clásico) / React + Vite (Moderno).
+*   **Estilos:** Bootstrap 5 / Tailwind CSS v4.
+*   **Base de Datos:** PostgreSQL (en contenedor Docker).
+*   **DevOps:** GitHub Actions (CI/CD) y Docker.
+
+---
+
+## 💻 Instrucciones de Ejecución
+
+### 1. Preparación
+Asegúrate de tener un archivo `.env` configurado. Luego, instala las dependencias:
+```powershell
 npm install
+cd frontend; npm install; cd ..
+```
 
-# 3. Crear el archivo .env (copiar y editar)
-# Contenido minimo:
-#   PORT=3000
-#   POSTGRES_USER=yo
-#   POSTGRES_PASSWORD=tu_clave
-#   POSTGRES_DB=ssbw
-#   DATABASE_URL="postgresql://yo:tu_clave@localhost:5432/ssbw?schema=public"
-#   SECRET_KEY="clave-jwt"
-#   SESSION_SECRET="clave-session"
-#   LOG_LEVEL=info
-
-# 4. Arrancar PostgreSQL
+### 2. Base de Datos (Docker)
+Levanta el contenedor de PostgreSQL:
+```powershell
 docker compose up -d
+```
 
-# 5. Crear las tablas y generar el cliente Prisma
-npm run migrate
-
-# 6. Cargar los productos
+### 3. Sincronización y Datos
+Configura las tablas y añade los productos de prueba:
+```powershell
+npx prisma migrate dev --name init
 npm run seed
-
-# 7. Crear usuarios de prueba
 npm run usuarios
-
-# 8. Arrancar la app
-npm run dev
 ```
 
-La tienda estara en **http://localhost:3000**
+### 4. Lanzamiento
+Para ver todo en funcionamiento, necesitas arrancar ambos mundos:
 
-## Usuarios de prueba
+*   **Backend (Puerto 3000):** `npm run dev`
+*   **Frontend SPA (Puerto 5173):** `cd frontend; npm run dev`
 
-| Email | Password | Rol |
-|-------|----------|-----|
-| admin@prado.es | Admin1234! | Admin |
-| usuario@prado.es | Demo1234! | Normal |
+---
 
-## Scripts
+## 📁 Estructura del Proyecto
 
-| Comando | Que hace |
-|---------|----------|
-| `npm run dev` | Arranca el servidor con hot-reload |
-| `npm run seed` | Carga los productos en la BD |
-| `npm run usuarios` | Crea los usuarios de prueba |
-| `npm run migrate` | Ejecuta las migraciones de Prisma |
-| `npm run studio` | Abre Prisma Studio (BD visual) |
+*   `index.ts`: Punto de entrada del servidor.
+*   `routes/`: Lógica de navegación y API.
+*   `prisma/`: Definición de modelos de datos.
+*   `views/`: Plantillas para la tienda clásica.
+*   `frontend/`: Código fuente de la nueva aplicación React.
 
-## API REST
-
-| Metodo | Ruta | Descripcion |
-|--------|------|------------|
-| GET | /api/productos | Lista (con ?desde, ?hasta, ?ordenacion) |
-| GET | /api/productos/:id | Un producto |
-| POST | /api/productos | Crear |
-| PUT | /api/productos/:id | Actualizar |
-| DELETE | /api/productos/:id | Eliminar |
-
-Se pueden probar con la extension **REST Client** de VS Code abriendo `test-api.http`.
-
-## Estructura
-
-```
-index.ts                 Servidor principal
-logger.ts                Configuracion de Winston
-prisma/
-  schema.prisma          Esquema de la BD
-  prisma.client.ts       Cliente Prisma + metodos de auth
-routes/
-  productos.ts           Tienda y carrito
-  usuarios.ts            Login / logout
-  api.ts                 API REST
-views/
-  base.njk               Layout comun
-  portada.njk             Listado de productos
-  detalle.njk             Detalle de producto
-  login.njk               Formulario de login
-  mi-cuenta.njk           Panel de usuario
-```
+---
+*Desarrollado con ❤️ para el Master SIBW.*
