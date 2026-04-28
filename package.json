@@ -5,12 +5,12 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "dev":      "node --watch --env-file=.env index.ts",
-    "seed":     "node --env-file=.env seed.ts",
+    "dev": "node --watch --env-file=.env index.ts",
+    "seed": "node --env-file=.env seed.ts",
     "usuarios": "node --env-file=.env registra_usuarios.ts",
-    "migrate":  "npx prisma migrate dev",
-    "studio":   "npx prisma studio",
-    "scrap":    "node scrap-tp.js"
+    "migrate": "npx prisma migrate dev",
+    "studio": "npx prisma studio",
+    "scrap": "node scrap-tp.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "@types/pg": "^8.18.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.18.2",
     "@types/jsonwebtoken": "^9.0.10",

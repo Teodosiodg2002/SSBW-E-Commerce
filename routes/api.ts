@@ -22,6 +22,22 @@ router.get('/api/productos', async (req, res) => {
     }
 });
 
+// GET /api/productos/random — devuelve un producto aleatorio
+router.get('/api/productos/random', async (req, res) => {
+    try {
+        const total = await prisma.producto.count();
+        if (total === 0) return res.status(404).json({ error: 'No hay productos' });
+        
+        const random_index = Math.floor(Math.random() * total);
+        const producto = await prisma.producto.findFirst({
+            skip: random_index
+        });
+        res.json(producto);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // GET /api/productos/:id — un producto
 router.get('/api/productos/:id', async (req, res) => {
     const id = parseInt(req.params.id);
