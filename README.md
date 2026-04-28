@@ -17,6 +17,30 @@ La aplicación se basa en una arquitectura **Full-stack** que combina dos mundos
 
 El proyecto ha crecido tarea a tarea, incorporando las mejores prácticas de la industria:
 
+### 🌱 Tarea 1: Empezando con Express y Node.js
+*   **Qué se hizo:** Configuración inicial del entorno de ejecución y creación del primer servidor web.
+*   **Beneficio:** Establecimiento de una base sólida y escalable para construir toda la lógica de la tienda.
+
+### 🕷️ Tarea 2: Web Scraping con Playwright
+*   **Qué se hizo:** Automatización de la extracción de datos de productos reales de la web del Museo del Prado.
+*   **Beneficio:** Disponibilidad de un catálogo real y variado sin necesidad de introducir datos manualmente.
+
+### 🗄️ Tarea 3: Base de Datos con Prisma
+*   **Qué se hizo:** Implementación del ORM Prisma y modelado de datos para PostgreSQL.
+*   **Beneficio:** Persistencia de datos eficiente y segura, permitiendo gestionar miles de productos con alto rendimiento.
+
+### 🖼️ Tarea 4: Portada, Búsqueda y Detalle
+*   **Qué se hizo:** Creación de las vistas principales de la tienda y lógica de filtrado de productos.
+*   **Beneficio:** Una interfaz funcional donde los usuarios pueden explorar el catálogo de arte de forma intuitiva.
+
+### 🛒 Tarea 5: Carrito y Logging Profesional
+*   **Qué se hizo:** Implementación de la cesta de la compra y sistema de logs con Winston.
+*   **Beneficio:** Los usuarios pueden gestionar sus pedidos y el administrador puede monitorizar errores y eventos en tiempo real.
+
+### 🔐 Tarea 6: Autenticación y Seguridad
+*   **Qué se hizo:** Sistema de registro, inicio de sesión y protección de rutas con JWT.
+*   **Beneficio:** Seguridad para los datos de los usuarios y control de acceso a funciones administrativas.
+
 ### 🛠️ Tarea 7: Estandarización con API REST
 *   **Qué se hizo:** Creamos una interfaz de comunicación estándar (API).
 *   **Beneficio:** Ahora el servidor no solo sirve páginas web, sino que puede enviar datos crudos (JSON) a cualquier otra aplicación (como un móvil o nuestra nueva SPA).
