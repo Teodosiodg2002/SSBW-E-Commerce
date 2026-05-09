@@ -5,8 +5,8 @@ import logger from '../logger.ts';
 
 const router = express.Router();
 
-// GET /api/productos — lista con paginacion (?desde, ?hasta, ?ordenacion)
-router.get('/api/productos', async (req, res) => {
+// GET /productos — lista con paginacion (?desde, ?hasta, ?ordenacion)
+router.get('/productos', async (req, res) => {
     const desde      = Math.max(0,   parseInt(req.query.desde as string)  || 0);
     const hasta      = Math.min(100, parseInt(req.query.hasta as string) || 20);
     const ordenacion = req.query.ordenacion === 'desc' ? 'desc' as const : 'asc' as const;
@@ -22,8 +22,8 @@ router.get('/api/productos', async (req, res) => {
     }
 });
 
-// GET /api/productos/random — devuelve un producto aleatorio
-router.get('/api/productos/random', async (req, res) => {
+// GET /productos/random — devuelve un producto aleatorio
+router.get('/productos/random', async (req, res) => {
     try {
         const total = await prisma.producto.count();
         if (total === 0) return res.status(404).json({ error: 'No hay productos' });
@@ -38,8 +38,8 @@ router.get('/api/productos/random', async (req, res) => {
     }
 });
 
-// GET /api/productos/:id — un producto
-router.get('/api/productos/:id', async (req, res) => {
+// GET /productos/:id — un producto
+router.get('/productos/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'id debe ser numero' });
 
@@ -52,8 +52,8 @@ router.get('/api/productos/:id', async (req, res) => {
     }
 });
 
-// POST /api/productos — crear producto (body JSON)
-router.post('/api/productos', async (req, res) => {
+// POST /productos — crear producto (body JSON)
+router.post('/productos', async (req, res) => {
     const { titulo, descripcion, precio, imagen } = req.body;
     if (!titulo || !descripcion || precio === undefined || !imagen) {
         return res.status(400).json({ error: 'Faltan campos: titulo, descripcion, precio, imagen' });
@@ -68,8 +68,8 @@ router.post('/api/productos', async (req, res) => {
     }
 });
 
-// PUT /api/productos/:id — actualizar campos
-router.put('/api/productos/:id', async (req, res) => {
+// PUT /productos/:id — actualizar campos
+router.put('/productos/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'id debe ser numero' });
 
@@ -91,8 +91,8 @@ router.put('/api/productos/:id', async (req, res) => {
     }
 });
 
-// DELETE /api/productos/:id — eliminar producto
-router.delete('/api/productos/:id', async (req, res) => {
+// DELETE /productos/:id — eliminar producto
+router.delete('/productos/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'id debe ser numero' });
 
