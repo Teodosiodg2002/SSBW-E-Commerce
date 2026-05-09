@@ -110,6 +110,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     }
 });
 
-app.listen(PORT, () => {
-    logger.info(`Servidor en http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        logger.info(`Servidor en http://localhost:${PORT}`);
+    });
+}
