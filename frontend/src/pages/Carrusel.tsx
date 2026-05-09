@@ -1,12 +1,10 @@
-import useSWR from 'swr';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { useProductList } from '../hooks/useProducts';
+import { Producto } from '../types';
 
 const Carrusel = () => {
-  // Fetch products from the existing API
-  const { data, error, isLoading } = useSWR('http://localhost:3000/api/productos?hasta=10', fetcher);
+  const { productos, error, isLoading } = useProductList(10);
   
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -22,7 +20,7 @@ const Carrusel = () => {
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi, setSelectedIndex]);
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -39,7 +37,7 @@ const Carrusel = () => {
     );
   }
 
-  if (error || !data || !data.productos) {
+  if (error || productos.length === 0) {
     return (
       <div className="alert alert-error max-w-lg mx-auto mt-10 shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -47,8 +45,6 @@ const Carrusel = () => {
       </div>
     );
   }
-
-  const productos = data.productos;
 
   return (
     <div className="max-w-4xl mx-auto py-8">
@@ -60,7 +56,7 @@ const Carrusel = () => {
         {/* Carrusel Embla */}
         <div className="overflow-hidden rounded-3xl shadow-2xl bg-base-100" ref={emblaRef}>
           <div className="flex touch-pan-y flex-row h-96">
-            {productos.map((prod: any, index: number) => (
+            {productos.map((prod: Producto) => (
               <div 
                 key={prod.id} 
                 className="flex-[0_0_100%] min-w-0 relative flex justify-center items-center p-8 bg-base-200"
@@ -97,7 +93,7 @@ const Carrusel = () => {
 
       {/* Indicadores (Dots) */}
       <div className="flex justify-center gap-2 mt-6">
-        {productos.map((_: any, index: number) => (
+        {productos.map((_: Producto, index: number) => (
           <button
             key={index}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
