@@ -105,5 +105,3 @@ Para ver todo en funcionamiento, necesitas arrancar ambos mundos:
 *   `views/`: Plantillas para la tienda clásica.
 *   `frontend/`: Código fuente de la nueva aplicación React.
 
----
-*Desarrollado con ❤️ para el Master SIBW.*
