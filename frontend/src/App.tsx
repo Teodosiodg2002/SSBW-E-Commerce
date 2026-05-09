@@ -1,13 +1,21 @@
-import Perritos from './components/Perritos.tsx'
-import Cuadros from './components/Cuadros.tsx'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout.tsx';
+import Portada from './pages/Portada.tsx';
+import Tarea9 from './pages/Tarea9.tsx';
+import Carrusel from './pages/Carrusel.tsx';
 
 function App() {
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-center justify-center min-h-screen bg-gray-50 font-montserrat">
-      <Perritos />
-      <Cuadros />
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Portada />} />
+          <Route path="tarea-9" element={<Tarea9 />} />
+          <Route path="carrusel" element={<Carrusel />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

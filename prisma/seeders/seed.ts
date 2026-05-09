@@ -1,4 +1,4 @@
-import prisma from "./prisma/prisma.client.ts";
+import prisma from "../prisma.client.ts";
 import productosJson from "./productos.json" with { type: 'json' };
 
 type Producto = {
