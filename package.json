@@ -6,11 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --env-file=.env index.ts",
-    "seed": "node --env-file=.env seed.ts",
-    "usuarios": "node --env-file=.env registra_usuarios.ts",
+    "seed": "node --env-file=.env prisma/seeders/seed.ts",
+    "usuarios": "node --env-file=.env prisma/seeders/registra_usuarios.ts",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "scrap": "node scrap-tp.js"
+    "scrap": "node prisma/seeders/scrap-tp.js"
   },
   "author": "",
   "license": "ISC",

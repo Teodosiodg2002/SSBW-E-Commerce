@@ -53,6 +53,10 @@ El proyecto ha crecido tarea a tarea, incorporando las mejores prácticas de la 
 *   **Qué se hizo:** Introdujimos un frontal independiente con **React** y **Vite**, consumiendo datos mediante **CORS** y la librería **SWR**.
 *   **Beneficio:** Separamos totalmente la "cara" de la aplicación del "cerebro". Usar componentes de React nos permite crear interfaces mucho más complejas y reactivas de forma organizada, mientras que **Tailwind CSS** nos da un diseño premium y adaptado a móviles.
 
+### 🧭 Tarea 10: Router, Embla y DaisyUI
+*   **Qué se hizo:** Implementamos enrutamiento con `react-router-dom` creando múltiples páginas (Portada, Galería, Carrusel). Integramos `daisyui` para componentes listos para usar y `embla-carousel-react` para la presentación de imágenes.
+*   **Beneficio:** La aplicación ahora tiene una navegación real de SPA (Single Page Application) sin recargas. Además, se ha realizado una **refactorización profesional**, limpiando el repositorio y organizando los scripts de base de datos de manera óptima.
+
 ---
 
 ## 🛠️ Stack Tecnológico

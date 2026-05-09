@@ -1,5 +1,5 @@
-import prisma from "./prisma/prisma.client.ts";
-import logger from "./logger.ts";
+import prisma from "../prisma.client.ts";
+import logger from "../../logger.ts";
 
 // Usuarios de prueba a registrar
 const usuarios = [
