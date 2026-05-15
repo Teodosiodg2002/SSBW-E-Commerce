@@ -1,139 +1,139 @@
-# 🏛️ Tienda Prado - E-Commerce de Arte
+# Tienda Prado
 
-¡Bienvenido a **Tienda Prado**! Esta es una aplicación de comercio electrónico evolutiva inspirada en la tienda del Museo del Prado. El proyecto ha pasado de ser un servidor sencillo a una plataforma moderna con arquitectura desacoplada (Backend + Frontend).
-
-## 🚀 ¿Cómo funciona la aplicación?
-
-La aplicación se basa en una arquitectura **Full-stack** que combina dos mundos:
-
-1.  **El Núcleo (Backend):** Un servidor robusto construido con **Node.js, Express y Prisma**. Se encarga de la lógica de negocio, la seguridad (JWT) y la gestión de la base de datos PostgreSQL.
-2.  **La Interfaz (Frontend):** 
-    *   Una interfaz clásica servida con **Nunjucks** para la tienda principal.
-    *   Una **SPA (Single Page Application)** moderna construida con **React, Vite y Tailwind CSS** para experiencias de usuario de alta velocidad.
+An e-commerce system for the Museo del Prado gift shop, built as a progressive full-stack application across eleven development milestones. The project evolves from a minimal Node.js server to a hybrid architecture combining Server-Side Rendering, a React Single Page Application, and an Astro-powered static site with React islands.
 
 ---
 
-## 📈 Evolución y Mejoras (Hitos del Proyecto)
+## Current Capabilities
 
-El proyecto ha crecido tarea a tarea, incorporando las mejores prácticas de la industria:
-
-### 🌱 Tarea 1: Empezando con Express y Node.js
-*   **Qué se hizo:** Configuración inicial del entorno de ejecución y creación del primer servidor web.
-*   **Beneficio:** Establecimiento de una base sólida y escalable para construir toda la lógica de la tienda.
-
-### 🕷️ Tarea 2: Web Scraping con Playwright
-*   **Qué se hizo:** Automatización de la extracción de datos de productos reales de la web del Museo del Prado.
-*   **Beneficio:** Disponibilidad de un catálogo real y variado sin necesidad de introducir datos manualmente.
-
-### 🗄️ Tarea 3: Base de Datos con Prisma
-*   **Qué se hizo:** Implementación del ORM Prisma y modelado de datos para PostgreSQL.
-*   **Beneficio:** Persistencia de datos eficiente y segura, permitiendo gestionar miles de productos con alto rendimiento.
-
-### 🖼️ Tarea 4: Portada, Búsqueda y Detalle
-*   **Qué se hizo:** Creación de las vistas principales de la tienda y lógica de filtrado de productos.
-*   **Beneficio:** Una interfaz funcional donde los usuarios pueden explorar el catálogo de arte de forma intuitiva.
-
-### 🛒 Tarea 5: Carrito y Logging Profesional
-*   **Qué se hizo:** Implementación de la cesta de la compra y sistema de logs con Winston.
-*   **Beneficio:** Los usuarios pueden gestionar sus pedidos y el administrador puede monitorizar errores y eventos en tiempo real.
-
-### 🔐 Tarea 6: Autenticación y Seguridad
-*   **Qué se hizo:** Sistema de registro, inicio de sesión y protección de rutas con JWT.
-*   **Beneficio:** Seguridad para los datos de los usuarios y control de acceso a funciones administrativas.
-
-### 🛠️ Tarea 7: Estandarización con API REST
-*   **Qué se hizo:** Creamos una interfaz de comunicación estándar (API).
-*   **Beneficio:** Ahora el servidor no solo sirve páginas web, sino que puede enviar datos crudos (JSON) a cualquier otra aplicación (como un móvil o nuestra nueva SPA).
-
-### ✨ Tarea 8: Experiencia de Usuario (UX) y DOM
-*   **Qué se hizo:** Mejoramos el login con validaciones inteligentes y transformamos el carrito para que funcione sin recargar la página.
-*   **Beneficio:** La navegación se siente mucho más fluida. El usuario puede añadir o quitar productos y ver los cambios al instante, eliminando la fricción de esperar a que la página cargue.
-
-### ⚛️ Tarea 9: El Salto a React (SPA)
-*   **Qué se hizo:** Introdujimos un frontal independiente con **React** y **Vite**, consumiendo datos mediante **CORS** y la librería **SWR**.
-*   **Beneficio:** Separamos totalmente la "cara" de la aplicación del "cerebro". Usar componentes de React nos permite crear interfaces mucho más complejas y reactivas de forma organizada, mientras que **Tailwind CSS** nos da un diseño premium y adaptado a móviles.
-
-### 🧭 Tarea 10: Router, Embla y DaisyUI
-*   **Qué se hizo:** Implementamos enrutamiento con `react-router-dom` creando múltiples páginas (Portada, Galería, Carrusel). Integramos `daisyui` para componentes listos para usar y `embla-carousel-react` para la presentación de imágenes.
-*   **Beneficio:** La aplicación ahora tiene una navegación real de SPA (Single Page Application) sin recargas. Además, se ha realizado una **refactorización profesional**, limpiando el repositorio y organizando los scripts de base de datos de manera óptima.
+- Product catalog with search, filtering, and detail pages (Nunjucks SSR)
+- Shopping cart with AJAX interactions (no full-page reloads)
+- JWT-based authentication with protected routes
+- REST API serving all product and cart data as JSON
+- React SPA with client-side routing, SWR data fetching, and an Embla carousel
+- Astro static site with a hydrated React carousel island
+- PostgreSQL persistence via Prisma ORM
+- MVC backend architecture (controllers, routes, middleware)
+- Automated test suite (Vitest + Supertest)
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Project Evolution
 
-*   **Lenguaje:** TypeScript (Tipado fuerte para evitar errores).
-*   **Backend:** Express.js, Prisma ORM, JWT (Autenticación).
-*   **Frontend:** Nunjucks (Clásico) / React + Vite (Moderno).
-*   **Estilos:** Bootstrap 5 / Tailwind CSS v4.
-*   **Base de Datos:** PostgreSQL (en contenedor Docker).
-*   **DevOps:** GitHub Actions (CI/CD) y Docker.
+### Milestone 1 — Express and Node.js Foundation
 
----
+**Context:** The project needed a starting point: a web server capable of serving dynamic content.
 
-## 💻 Instrucciones de Ejecución
+**Implementation:** Set up a Node.js server with Express. Configured routing, middleware for parsing request bodies, and a basic HTML response.
 
-### 1. Preparación
-Asegúrate de tener un archivo `.env` configurado. Luego, instala las dependencias:
-```powershell
-npm install
-cd frontend; npm install; cd ..
-```
-
-### 2. Base de Datos (Docker)
-Levanta el contenedor de PostgreSQL:
-```powershell
-docker compose up -d
-```
-
-### 3. Sincronización y Datos
-Configura las tablas y añade los productos de prueba:
-```powershell
-npx prisma migrate dev --name init
-npm run seed
-npm run usuarios
-```
-
-### 4. Lanzamiento
-Para ver todo en funcionamiento, necesitas arrancar ambos mundos:
-
-*   **Backend (Puerto 3000):** `npm run dev`
-*   **Frontend SPA (Puerto 5173):** `cd frontend; npm run dev`
+**Progress:** Established the runtime and project structure that all subsequent milestones build upon.
 
 ---
 
-## 📁 Estructura del Proyecto (MVC)
+### Milestone 2 — Web Scraping with Playwright
 
-El proyecto sigue el patrón **Modelo-Vista-Controlador (MVC)** para una organización profesional:
+**Context:** The catalog needed real product data without manual entry.
 
-*   `index.ts`: Punto de entrada del servidor y configuración de middlewares globales.
-*   `controllers/`: Lógica de negocio (Controladores) desacoplada de las rutas.
-*   `routes/`: Definición de endpoints y mapeo a controladores.
-*   `prisma/`: Modelos de datos y scripts de semillado (*seeders*).
-*   `views/`: Plantillas Nunjucks para la tienda clásica (Vistas SSR).
-*   `frontend/`: Código fuente de la SPA en React (Vistas CSR).
-*   `tests/`: Suite de pruebas automatizadas para el backend.
+**Implementation:** Wrote a Playwright script that navigates the Museo del Prado online shop, extracts product titles, descriptions, prices, and image URLs, and persists them to a local JSON file.
+
+**Progress:** Automated data acquisition, producing a realistic dataset of over 100 products from the Prado's actual inventory.
 
 ---
 
-## 🧪 Suite de Tests (Garantía de Calidad)
+### Milestone 3 — Database Persistence with Prisma
 
-Se ha implementado una suite de pruebas robusta usando **Vitest** y **Supertest** para asegurar la estabilidad del sistema:
+**Context:** Storing data in memory or flat files is not scalable. The application needed a relational database.
 
-*   **Tests de API:** Valida que los endpoints de productos y carrito respondan correctamente.
-*   **Tests de Seguridad:** Verifica la protección de rutas mediante JWT.
-*   **Tests de Frontend:** Pruebas de renderizado y lógica de componentes React.
+**Implementation:** Introduced PostgreSQL (via Docker) as the database engine and Prisma as the ORM. Defined the `Producto` and `Usuario` models in `schema.prisma` and migrated the scraped data into the database using a seeder script.
 
-### Cómo ejecutar los tests:
-*   **Backend:** `npm test` (desde la raíz).
-*   **Frontend:** `cd frontend; npm test`.
+**Progress:** Data now survives server restarts. Prisma's type-safe query builder prevents an entire class of runtime errors and makes refactoring safe.
 
 ---
 
-## 🚀 Optimización "Clean Code 2026"
-El proyecto ha sido estabilizado bajo estándares modernos:
-*   **Aislamiento de API:** Todas las rutas REST están bajo el prefijo `/api` de forma estricta.
-*   **Performance:** El middleware del carrito ha sido optimizado para ignorar peticiones de API, reduciendo la latencia y carga en la BD.
-*   **Tipado Estricto:** Eliminación de tipos `any` en favor de interfaces TypeScript robustas.
-*   **Manejo de Errores:** Implementación de un *Global Error Handler* que centraliza fallos y evita caídas del servidor.
+### Milestone 4 — Product Pages and Search
 
+**Context:** Users needed to browse and find products, not just see a raw data dump.
 
+**Implementation:** Built three Nunjucks-rendered views: a home page listing all products, a search page with full-text filtering via Prisma, and a product detail page.
+
+**Progress:** The application became a functional storefront with a navigable catalog.
+
+---
+
+### Milestone 5 — Shopping Cart and Professional Logging
+
+**Context:** An e-commerce application must allow users to select items for purchase. Additionally, runtime behavior needed to be observable in production.
+
+**Implementation:** Implemented a session-based shopping cart using `express-session`. Users can add and remove products from any detail page. Integrated Winston for structured logging with file rotation and console output.
+
+**Progress:** The application acquired its core commercial functionality. Operational visibility through structured logs enabled monitoring without `console.log`.
+
+---
+
+### Milestone 6 — Authentication and Security
+
+**Context:** Some routes (account page, admin functions) must be restricted to authenticated users.
+
+**Implementation:** Added a registration and login flow with bcrypt password hashing. Authentication tokens are issued as JWTs and stored in `HttpOnly` cookies. A middleware layer decodes the token on every request and makes the user context available to templates and route handlers.
+
+**Progress:** The application gained a security layer. Unauthenticated requests to protected routes are redirected to `/login` with a 302 response.
+
+---
+
+### Milestone 7 — REST API
+
+**Context:** The Nunjucks frontend is tightly coupled to the server. Enabling a separate frontend or mobile client requires a data interface that returns JSON, not HTML.
+
+**Implementation:** Introduced a dedicated API router mounted under `/api`. All product endpoints return structured JSON with pagination metadata. CORS is configured to allow specific origins.
+
+**Progress:** Decoupled the data layer from the presentation layer. The backend now serves two types of clients: the Nunjucks templates (HTML) and any API consumer (JSON).
+
+---
+
+### Milestone 8 — UX Improvements and Dynamic DOM
+
+**Context:** The cart flow required full-page reloads, making the experience feel slow and dated.
+
+**Implementation:** Replaced the cart's form-based interaction with AJAX requests. The cart item count in the navbar updates without a page reload. The login form gained client-side validation with inline error messages.
+
+**Progress:** Transitioned key user flows from synchronous to asynchronous, significantly improving perceived performance.
+
+---
+
+### Milestone 9 — React SPA (First Decoupled Frontend)
+
+**Context:** Building complex interactive UIs within Nunjucks templates is limiting. A component-based approach was needed for richer experiences.
+
+**Implementation:** Created a separate Vite + React project in `/frontend`. Configured CORS on the backend to accept requests from the React dev server. Built a random product gallery component using SWR for data fetching and Tailwind CSS for styling.
+
+**Progress:** Introduced the concept of a fully decoupled frontend. The React app and the Express backend are now independent processes communicating exclusively through the REST API.
+
+---
+
+### Milestone 10 — React Router, Embla Carousel, and DaisyUI
+
+**Context:** The single-page React app needed multiple navigable views and richer UI components.
+
+**Implementation:** Integrated `react-router-dom` with a nested route structure using a shared `MainLayout`. Built a full-page `Carrousel` component powered by Embla Carousel to display product images. Added DaisyUI for a component library on top of Tailwind CSS. Refactored data fetching into reusable custom hooks (`useProductList`, `useRandomProduct`) and introduced strict TypeScript interfaces to eliminate `any` types. Implemented a global error handler in the Express backend.
+
+**Progress:** The React application became a true multi-page SPA. The backend was stabilized with Clean Code practices: MVC separation, optimized middleware, and centralized error handling.
+
+---
+
+### Milestone 11 — Astro Static Site with React Islands
+
+**Context:** Not all pages require the full React runtime. A framework that generates static HTML by default while selectively enabling interactivity only where needed would improve performance and loading speed.
+
+**Implementation:** Created a new Astro project in `/astro-shop`, isolated from the existing React SPA to avoid breaking previous milestones. Configured Astro with the `@astrojs/react` integration and Tailwind CSS v4 with DaisyUI. Migrated the `Carrousel.tsx` component and its hooks into the Astro project. The carousel page uses the `client:load` hydration directive to ship React's JavaScript only for that component, leaving the rest of the page as zero-JS static HTML.
+
+**Progress:** Introduced the Islands Architecture. The `/carrousel` route is now a static HTML page that progressively enhances itself with a React component once it loads in the browser. This demonstrates how modern static site generators can integrate framework components without paying the cost of a full SPA bundle on every page.
+
+---
+
+## Documentation Index
+
+| Document | Description |
+|---|---|
+| [docs/deployment.md](docs/deployment.md) | Installation steps, environment variables, Docker setup, and run commands |
+| [docs/architecture.md](docs/architecture.md) | Technical stack, component interaction diagrams, API reference, and data model |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Known errors and their verified solutions |
