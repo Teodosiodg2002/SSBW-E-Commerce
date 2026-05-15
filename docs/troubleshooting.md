@@ -1,28 +1,28 @@
-# Troubleshooting Guide
+# Guía de Resolución de Problemas
 
-This document records known issues encountered during development and their verified solutions.
+Este documento registra los errores conocidos encontrados durante el desarrollo y sus soluciones verificadas.
 
 ---
 
-## Docker / Database
+## Docker / Base de Datos
 
-### PostgreSQL container in restart loop
+### El contenedor de PostgreSQL entra en bucle de reinicios
 
-**Symptom:** `docker ps` shows the container status as `Restarting (1) N seconds ago`.
+**Síntoma:** `docker ps` muestra el estado del contenedor como `Restarting (1) N seconds ago`.
 
-**Cause:** The `postgres:alpine` tag without a version pin was updated by Docker to PostgreSQL 18. The new major version expects data in a different directory format (`/var/lib/postgresql/18/main`) and refuses to start when it finds data from a previous version in `/var/lib/postgresql/data`.
+**Causa:** El tag `postgres:alpine` sin versión fue actualizado por Docker a PostgreSQL 18. La nueva versión mayor espera los datos en un formato de directorio diferente (`/var/lib/postgresql/18/main`) y se niega a arrancar cuando encuentra datos de una versión anterior en `/var/lib/postgresql/data`.
 
-**Solution:**
+**Solución:**
 
-1. Stop and remove the container and its volume:
+1. Detener y eliminar el contenedor y su volumen:
    ```bash
    docker compose down -v
    ```
-2. Pin the image version in `docker-compose.yml`:
+2. Fijar la versión de la imagen en `docker-compose.yml`:
    ```yaml
    image: postgres:16-alpine
    ```
-3. Restart and re-seed:
+3. Reiniciar y re-sembrar:
    ```bash
    docker compose up -d
    npx prisma migrate dev
@@ -30,7 +30,7 @@ This document records known issues encountered during development and their veri
    npm run usuarios
    ```
 
-> **Prevention:** Always pin major versions in Docker images used for persistent data. Never use `latest` or unversioned tags for database containers.
+> **Prevención:** Siempre fija las versiones mayores en las imágenes Docker que se usan para datos persistentes. Nunca uses los tags `latest` o sin versión para contenedores de bases de datos.
 
 ---
 
@@ -38,64 +38,64 @@ This document records known issues encountered during development and their veri
 
 ### SyntaxError: Named export 'Request' not found (Express + Node.js ESM)
 
-**Symptom:**
+**Síntoma:**
 ```
 SyntaxError: Named export 'Request' not found. The requested module 'express'
 is a CommonJS module, which may not support all module.exports as named exports.
 ```
 
-**Cause:** Node.js v24 running in ESM mode cannot statically import named exports from CommonJS modules. Express ships as CommonJS, so `import { Request, Response } from 'express'` fails at runtime.
+**Causa:** Node.js v24 en modo ESM no puede importar estáticamente exportaciones nombradas de módulos CommonJS. Express se distribuye como CommonJS, por lo que `import { Request, Response } from 'express'` falla en tiempo de ejecución.
 
-**Solution:** Use `import type`, which is erased at compile time and never evaluated at runtime:
+**Solución:** Usar `import type`, que se elimina en tiempo de compilación y nunca se evalúa en tiempo de ejecución:
 ```typescript
-// Incorrect
+// Incorrecto
 import { Request, Response } from 'express';
 
-// Correct
+// Correcto
 import type { Request, Response } from 'express';
 ```
 
 ---
 
-## Astro Integration (Tarea 11)
+## Integración con Astro (Hito 11)
 
-### Carousel shows infinite loading spinner
+### El carrusel muestra el spinner de carga infinito
 
-**Cause (primary):** The backend CORS configuration did not include the Astro development server port (`4321`). All API requests from `http://localhost:4321` were silently blocked by the browser.
+**Causa (principal):** La configuración CORS del backend no incluía el puerto del servidor de desarrollo de Astro (`4321`). El navegador bloqueaba silenciosamente todas las peticiones a la API desde `http://localhost:4321`.
 
-**Solution:** Add the Astro origin to `index.ts`:
+**Solución:** Añadir el origen de Astro en `index.ts`:
 ```typescript
 app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:5174',
-    'http://localhost:4321'   // ← Add this
+    'http://localhost:4321'   // ← Añadir esto
   ]
 }));
 ```
 
 ---
 
-### Images and titles do not render in the carousel
+### Las imágenes y los títulos no se renderizan en el carrusel
 
-**Cause:** The Prisma schema uses Spanish field names with diacritics: `título` and `descripción`. The TypeScript interface in the Astro project used `titulo` and `descripcion` (without accents), causing the fields to resolve to `undefined` in the component.
+**Causa:** El esquema Prisma usa nombres de campo en español con diacríticos: `título` y `descripción`. La interfaz TypeScript en el proyecto Astro usaba `titulo` y `descripcion` (sin acentos), haciendo que los campos se resolvieran como `undefined` en el componente.
 
-Additionally, the `Char(127)` column type in PostgreSQL pads values with trailing spaces, which corrupts image file paths when used in `src` attributes.
+Adicionalmente, el tipo de columna `Char(127)` en PostgreSQL rellena los valores con espacios al final, lo que corrompe las rutas de los archivos de imagen cuando se usan en atributos `src`.
 
-**Solution:**
+**Solución:**
 
-1. Update `src/types/index.ts` to match the actual API response:
+1. Actualizar `src/types/index.ts` para que coincida con la respuesta real de la API:
    ```typescript
    export interface Producto {
      id: number;
-     título: string;       // with accent
-     descripción: string;  // with accent
-     precio: string;       // Decimal serializes as string
+     título: string;       // con acento
+     descripción: string;  // con acento
+     precio: string;       // Decimal se serializa como string
      imagen: string;
    }
    ```
 
-2. Apply `.trim()` when rendering padded string fields:
+2. Aplicar `.trim()` al renderizar campos de texto con relleno:
    ```tsx
    <img src={`http://localhost:3000/public/imagenes/${prod.imagen.trim()}`} />
    <p>{prod.título.trim()}</p>
@@ -103,11 +103,11 @@ Additionally, the `Char(127)` column type in PostgreSQL pads values with trailin
 
 ---
 
-### `astro add tailwind` fails with "Cannot find module 'astro/config'"
+### `astro add tailwind` falla con "Cannot find module 'astro/config'"
 
-**Cause:** The `astro add` command was run before `npm install` had been executed. The Astro CLI requires the local `astro` package to be present to resolve its own configuration.
+**Causa:** El comando `astro add` fue ejecutado antes de que se hubiera ejecutado `npm install`. La CLI de Astro requiere que el paquete `astro` local esté presente para resolver su propia configuración.
 
-**Solution:** Always run `npm install` before using `astro add`:
+**Solución:** Ejecutar siempre `npm install` antes de usar `astro add`:
 ```bash
 npm install
 npx astro add tailwind --yes
@@ -116,29 +116,29 @@ npx astro add react --yes
 
 ---
 
-### DaisyUI not applying styles in Astro
+### DaisyUI no aplica estilos en Astro
 
-**Cause:** DaisyUI v5 changed its integration method. In Tailwind CSS v4, plugins are declared in the CSS file using the `@plugin` directive, not in a JavaScript config file.
+**Causa:** DaisyUI v5 cambió su método de integración. En Tailwind CSS v4, los plugins se declaran en el archivo CSS usando la directiva `@plugin`, no en un archivo de configuración JavaScript.
 
-**Correct `global.css` configuration:**
+**Configuración correcta de `global.css`:**
 ```css
 @import "tailwindcss";
 @plugin "daisyui";
 ```
 
-The `@import "daisyui/daisyui.css"` approach (used in earlier Vite setups) is not compatible with the `@tailwindcss/vite` plugin in Astro and causes build errors.
+El enfoque `@import "daisyui/daisyui.css"` (usado en configuraciones anteriores con Vite) no es compatible con el plugin `@tailwindcss/vite` en Astro y causa errores de build.
 
 ---
 
-## React SPA
+## SPA React
 
-### Blank page at `localhost:5174`
+### Página en blanco en `localhost:5174`
 
-**Symptom:** The Vite dev server reports `connected` in the console but the page renders nothing.
+**Síntoma:** El servidor de desarrollo de Vite reporta `connected` en la consola pero la página no renderiza nada.
 
-**Cause:** Importing `daisyui/daisyui.css` directly inside `index.css` via `@import` conflicts with the `@tailwindcss/vite` plugin, which processes CSS imports as Vite modules. The `.css` extension is not recognized in this context, causing the entire CSS pipeline to silently fail.
+**Causa:** Importar `daisyui/daisyui.css` directamente dentro de `index.css` mediante `@import` entra en conflicto con el plugin `@tailwindcss/vite`, que procesa las importaciones CSS como módulos de Vite. La extensión `.css` no se reconoce en este contexto, haciendo que el pipeline CSS entero falle silenciosamente.
 
-**Solution:** Move the DaisyUI import to `main.tsx`, before the application CSS:
+**Solución:** Mover la importación de DaisyUI a `main.tsx`, antes del CSS de la aplicación:
 ```tsx
 import 'daisyui/daisyui.css'
 import './index.css'
@@ -148,23 +148,23 @@ import './index.css'
 
 ## Git
 
-### `git pull` fails on feature branch
+### `git pull` falla en una rama de feature
 
-**Symptom:**
+**Síntoma:**
 ```
 There is no tracking information for the current branch.
 Please specify which branch you want to rebase against.
 ```
 
-**Cause:** The local branch does not have an upstream tracking reference set.
+**Causa:** La rama local no tiene establecida una referencia de seguimiento remoto.
 
-**Solution:**
+**Solución:**
 ```bash
 git branch --set-upstream-to=origin/feat/tarea-11-astro feat/tarea-11-astro
 git pull
 ```
 
-Or push with the `-u` flag to set tracking automatically:
+O hacer el push con el flag `-u` para establecer el seguimiento automáticamente:
 ```bash
 git push -u origin feat/tarea-11-astro
 ```

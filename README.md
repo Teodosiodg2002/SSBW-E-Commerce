@@ -1,139 +1,139 @@
 # Tienda Prado
 
-An e-commerce system for the Museo del Prado gift shop, built as a progressive full-stack application across eleven development milestones. The project evolves from a minimal Node.js server to a hybrid architecture combining Server-Side Rendering, a React Single Page Application, and an Astro-powered static site with React islands.
+Sistema de comercio electrónico para la tienda del Museo del Prado, construido como una aplicación full-stack progresiva a lo largo de once hitos de desarrollo. El proyecto evoluciona desde un servidor Node.js mínimo hasta una arquitectura híbrida que combina Renderizado en Servidor, una Single Page Application en React y un sitio estático generado con Astro con islas de React.
 
 ---
 
-## Current Capabilities
+## Capacidades Actuales
 
-- Product catalog with search, filtering, and detail pages (Nunjucks SSR)
-- Shopping cart with AJAX interactions (no full-page reloads)
-- JWT-based authentication with protected routes
-- REST API serving all product and cart data as JSON
-- React SPA with client-side routing, SWR data fetching, and an Embla carousel
-- Astro static site with a hydrated React carousel island
-- PostgreSQL persistence via Prisma ORM
-- MVC backend architecture (controllers, routes, middleware)
-- Automated test suite (Vitest + Supertest)
-
----
-
-## Project Evolution
-
-### Milestone 1 — Express and Node.js Foundation
-
-**Context:** The project needed a starting point: a web server capable of serving dynamic content.
-
-**Implementation:** Set up a Node.js server with Express. Configured routing, middleware for parsing request bodies, and a basic HTML response.
-
-**Progress:** Established the runtime and project structure that all subsequent milestones build upon.
+- Catálogo de productos con búsqueda, filtrado y páginas de detalle (Nunjucks SSR)
+- Carrito de compra con interacciones AJAX (sin recargas de página completas)
+- Autenticación basada en JWT con rutas protegidas
+- API REST que sirve todos los datos de productos y carrito en JSON
+- SPA en React con enrutamiento del lado del cliente, fetching de datos con SWR y un carrusel Embla
+- Sitio estático con Astro con una isla de React hidratada para el carrusel
+- Persistencia en PostgreSQL mediante Prisma ORM
+- Arquitectura MVC en el backend (controladores, rutas, middleware)
+- Suite de tests automatizados (Vitest + Supertest)
 
 ---
 
-### Milestone 2 — Web Scraping with Playwright
+## Evolución del Proyecto
 
-**Context:** The catalog needed real product data without manual entry.
+### Hito 1 — Fundamentos con Express y Node.js
 
-**Implementation:** Wrote a Playwright script that navigates the Museo del Prado online shop, extracts product titles, descriptions, prices, and image URLs, and persists them to a local JSON file.
+**Contexto:** El proyecto necesitaba un punto de partida: un servidor web capaz de servir contenido dinámico.
 
-**Progress:** Automated data acquisition, producing a realistic dataset of over 100 products from the Prado's actual inventory.
+**Implementación:** Se configuró un servidor Node.js con Express. Se definieron rutas, middleware para parsear el cuerpo de las peticiones y una respuesta HTML básica.
 
----
-
-### Milestone 3 — Database Persistence with Prisma
-
-**Context:** Storing data in memory or flat files is not scalable. The application needed a relational database.
-
-**Implementation:** Introduced PostgreSQL (via Docker) as the database engine and Prisma as the ORM. Defined the `Producto` and `Usuario` models in `schema.prisma` and migrated the scraped data into the database using a seeder script.
-
-**Progress:** Data now survives server restarts. Prisma's type-safe query builder prevents an entire class of runtime errors and makes refactoring safe.
+**Progreso:** Se estableció el runtime y la estructura del proyecto sobre la que se construyen todos los hitos posteriores.
 
 ---
 
-### Milestone 4 — Product Pages and Search
+### Hito 2 — Web Scraping con Playwright
 
-**Context:** Users needed to browse and find products, not just see a raw data dump.
+**Contexto:** El catálogo necesitaba datos de productos reales sin introducción manual.
 
-**Implementation:** Built three Nunjucks-rendered views: a home page listing all products, a search page with full-text filtering via Prisma, and a product detail page.
+**Implementación:** Se escribió un script de Playwright que navega la tienda online del Museo del Prado, extrae títulos, descripciones, precios y URLs de imágenes, y los persiste en un archivo JSON local.
 
-**Progress:** The application became a functional storefront with a navigable catalog.
-
----
-
-### Milestone 5 — Shopping Cart and Professional Logging
-
-**Context:** An e-commerce application must allow users to select items for purchase. Additionally, runtime behavior needed to be observable in production.
-
-**Implementation:** Implemented a session-based shopping cart using `express-session`. Users can add and remove products from any detail page. Integrated Winston for structured logging with file rotation and console output.
-
-**Progress:** The application acquired its core commercial functionality. Operational visibility through structured logs enabled monitoring without `console.log`.
+**Progreso:** Se automatizó la adquisición de datos, produciendo un conjunto de datos realista con más de 100 productos del inventario real del Prado.
 
 ---
 
-### Milestone 6 — Authentication and Security
+### Hito 3 — Persistencia en Base de Datos con Prisma
 
-**Context:** Some routes (account page, admin functions) must be restricted to authenticated users.
+**Contexto:** Almacenar datos en memoria o en archivos planos no es escalable. La aplicación necesitaba una base de datos relacional.
 
-**Implementation:** Added a registration and login flow with bcrypt password hashing. Authentication tokens are issued as JWTs and stored in `HttpOnly` cookies. A middleware layer decodes the token on every request and makes the user context available to templates and route handlers.
+**Implementación:** Se introdujo PostgreSQL (mediante Docker) como motor de base de datos y Prisma como ORM. Se definieron los modelos `Producto` y `Usuario` en `schema.prisma` y se migraron los datos scrapeados a la base de datos mediante un script de semillado.
 
-**Progress:** The application gained a security layer. Unauthenticated requests to protected routes are redirected to `/login` with a 302 response.
-
----
-
-### Milestone 7 — REST API
-
-**Context:** The Nunjucks frontend is tightly coupled to the server. Enabling a separate frontend or mobile client requires a data interface that returns JSON, not HTML.
-
-**Implementation:** Introduced a dedicated API router mounted under `/api`. All product endpoints return structured JSON with pagination metadata. CORS is configured to allow specific origins.
-
-**Progress:** Decoupled the data layer from the presentation layer. The backend now serves two types of clients: the Nunjucks templates (HTML) and any API consumer (JSON).
+**Progreso:** Los datos sobreviven a los reinicios del servidor. El constructor de consultas con tipado seguro de Prisma previene una clase completa de errores en tiempo de ejecución y hace que el refactoring sea seguro.
 
 ---
 
-### Milestone 8 — UX Improvements and Dynamic DOM
+### Hito 4 — Páginas de Productos y Búsqueda
 
-**Context:** The cart flow required full-page reloads, making the experience feel slow and dated.
+**Contexto:** Los usuarios necesitaban explorar y encontrar productos, no solo ver un volcado de datos brutos.
 
-**Implementation:** Replaced the cart's form-based interaction with AJAX requests. The cart item count in the navbar updates without a page reload. The login form gained client-side validation with inline error messages.
+**Implementación:** Se construyeron tres vistas renderizadas con Nunjucks: una página de inicio que lista todos los productos, una página de búsqueda con filtrado de texto completo mediante Prisma y una página de detalle de producto.
 
-**Progress:** Transitioned key user flows from synchronous to asynchronous, significantly improving perceived performance.
-
----
-
-### Milestone 9 — React SPA (First Decoupled Frontend)
-
-**Context:** Building complex interactive UIs within Nunjucks templates is limiting. A component-based approach was needed for richer experiences.
-
-**Implementation:** Created a separate Vite + React project in `/frontend`. Configured CORS on the backend to accept requests from the React dev server. Built a random product gallery component using SWR for data fetching and Tailwind CSS for styling.
-
-**Progress:** Introduced the concept of a fully decoupled frontend. The React app and the Express backend are now independent processes communicating exclusively through the REST API.
+**Progreso:** La aplicación se convirtió en una tienda funcional con un catálogo navegable.
 
 ---
 
-### Milestone 10 — React Router, Embla Carousel, and DaisyUI
+### Hito 5 — Carrito de Compra y Logging Profesional
 
-**Context:** The single-page React app needed multiple navigable views and richer UI components.
+**Contexto:** Una aplicación de e-commerce debe permitir a los usuarios seleccionar artículos para comprar. Además, el comportamiento en tiempo de ejecución necesitaba ser observable en producción.
 
-**Implementation:** Integrated `react-router-dom` with a nested route structure using a shared `MainLayout`. Built a full-page `Carrousel` component powered by Embla Carousel to display product images. Added DaisyUI for a component library on top of Tailwind CSS. Refactored data fetching into reusable custom hooks (`useProductList`, `useRandomProduct`) and introduced strict TypeScript interfaces to eliminate `any` types. Implemented a global error handler in the Express backend.
+**Implementación:** Se implementó un carrito de compra basado en sesiones usando `express-session`. Los usuarios pueden añadir y eliminar productos desde cualquier página de detalle. Se integró Winston para logging estructurado con rotación de archivos y salida por consola.
 
-**Progress:** The React application became a true multi-page SPA. The backend was stabilized with Clean Code practices: MVC separation, optimized middleware, and centralized error handling.
-
----
-
-### Milestone 11 — Astro Static Site with React Islands
-
-**Context:** Not all pages require the full React runtime. A framework that generates static HTML by default while selectively enabling interactivity only where needed would improve performance and loading speed.
-
-**Implementation:** Created a new Astro project in `/astro-shop`, isolated from the existing React SPA to avoid breaking previous milestones. Configured Astro with the `@astrojs/react` integration and Tailwind CSS v4 with DaisyUI. Migrated the `Carrousel.tsx` component and its hooks into the Astro project. The carousel page uses the `client:load` hydration directive to ship React's JavaScript only for that component, leaving the rest of the page as zero-JS static HTML.
-
-**Progress:** Introduced the Islands Architecture. The `/carrousel` route is now a static HTML page that progressively enhances itself with a React component once it loads in the browser. This demonstrates how modern static site generators can integrate framework components without paying the cost of a full SPA bundle on every page.
+**Progreso:** La aplicación adquirió su funcionalidad comercial principal. La visibilidad operacional mediante logs estructurados permite la monitorización sin recurrir a `console.log`.
 
 ---
 
-## Documentation Index
+### Hito 6 — Autenticación y Seguridad
 
-| Document | Description |
+**Contexto:** Algunas rutas (página de cuenta, funciones administrativas) deben estar restringidas a usuarios autenticados.
+
+**Implementación:** Se añadió un flujo de registro e inicio de sesión con hash de contraseñas mediante bcrypt. Los tokens de autenticación se emiten como JWT y se almacenan en cookies `HttpOnly`. Una capa de middleware decodifica el token en cada petición y pone el contexto del usuario a disposición de las plantillas y los manejadores de rutas.
+
+**Progreso:** La aplicación obtuvo una capa de seguridad. Las peticiones no autenticadas a rutas protegidas son redirigidas a `/login` con una respuesta 302.
+
+---
+
+### Hito 7 — API REST
+
+**Contexto:** El frontend en Nunjucks está acoplado al servidor. Habilitar un frontend separado o un cliente móvil requiere una interfaz de datos que devuelva JSON, no HTML.
+
+**Implementación:** Se introdujo un router de API dedicado montado bajo `/api`. Todos los endpoints de productos devuelven JSON estructurado con metadatos de paginación. El CORS se configuró para permitir orígenes específicos.
+
+**Progreso:** Se desacopló la capa de datos de la capa de presentación. El backend ahora sirve a dos tipos de clientes: las plantillas Nunjucks (HTML) y cualquier consumidor de API (JSON).
+
+---
+
+### Hito 8 — Mejoras de UX y DOM Dinámico
+
+**Contexto:** El flujo del carrito requería recargas completas de página, haciendo que la experiencia se sintiera lenta y obsoleta.
+
+**Implementación:** Se reemplazó la interacción del carrito basada en formularios con peticiones AJAX. El contador de artículos del carrito en la barra de navegación se actualiza sin recargar la página. El formulario de login obtuvo validación del lado del cliente con mensajes de error en línea.
+
+**Progreso:** Se transicionaron los flujos de usuario clave de síncronos a asíncronos, mejorando significativamente el rendimiento percibido.
+
+---
+
+### Hito 9 — SPA en React (Primer Frontend Desacoplado)
+
+**Contexto:** Construir interfaces de usuario interactivas complejas dentro de plantillas Nunjucks es limitante. Se necesitaba un enfoque basado en componentes para experiencias más ricas.
+
+**Implementación:** Se creó un proyecto separado con Vite + React en `/frontend`. Se configuró CORS en el backend para aceptar peticiones del servidor de desarrollo de React. Se construyó un componente de galería de productos aleatorios usando SWR para el fetching de datos y Tailwind CSS para los estilos.
+
+**Progreso:** Se introdujo el concepto de un frontend completamente desacoplado. La app React y el backend Express son ahora procesos independientes que se comunican exclusivamente a través de la API REST.
+
+---
+
+### Hito 10 — React Router, Embla Carousel y DaisyUI
+
+**Contexto:** La aplicación React de una sola página necesitaba múltiples vistas navegables y componentes de UI más ricos.
+
+**Implementación:** Se integró `react-router-dom` con una estructura de rutas anidadas usando un `MainLayout` compartido. Se construyó un componente `Carrousel` de página completa impulsado por Embla Carousel para mostrar imágenes de productos. Se añadió DaisyUI como librería de componentes sobre Tailwind CSS. Se refactorizó el fetching de datos en hooks personalizados reutilizables (`useProductList`, `useRandomProduct`) y se introdujeron interfaces TypeScript estrictas para eliminar los tipos `any`. Se implementó un manejador global de errores en el backend Express y se reorganizó la arquitectura siguiendo el patrón MVC.
+
+**Progreso:** La aplicación React se convirtió en una verdadera SPA multi-página. El backend se estabilizó con prácticas de Clean Code: separación MVC, middleware optimizado y manejo centralizado de errores.
+
+---
+
+### Hito 11 — Sitio Estático con Astro e Islas de React
+
+**Contexto:** No todas las páginas requieren el runtime completo de React. Un framework que genera HTML estático por defecto mientras habilita la interactividad selectivamente solo donde se necesita mejoraría el rendimiento y la velocidad de carga.
+
+**Implementación:** Se creó un nuevo proyecto Astro en `/astro-shop`, aislado de la SPA React existente para no romper los hitos anteriores. Se configuró Astro con la integración `@astrojs/react` y Tailwind CSS v4 con DaisyUI. Se migró el componente `Carrousel.tsx` y sus hooks al proyecto Astro. La página del carrusel utiliza la directiva de hidratación `client:load` para enviar el JavaScript de React únicamente para ese componente, dejando el resto de la página como HTML estático sin JavaScript.
+
+**Progreso:** Se introdujo la Arquitectura de Islas. La ruta `/carrousel` es ahora una página HTML estática que se mejora progresivamente con un componente React una vez que carga en el navegador. Esto demuestra cómo los generadores de sitios estáticos modernos pueden integrar componentes de framework sin pagar el coste de un bundle SPA completo en cada página.
+
+---
+
+## Índice de Documentación
+
+| Documento | Descripción |
 |---|---|
-| [docs/deployment.md](docs/deployment.md) | Installation steps, environment variables, Docker setup, and run commands |
-| [docs/architecture.md](docs/architecture.md) | Technical stack, component interaction diagrams, API reference, and data model |
-| [docs/troubleshooting.md](docs/troubleshooting.md) | Known errors and their verified solutions |
+| [docs/deployment.md](docs/deployment.md) | Pasos de instalación, variables de entorno, configuración de Docker y comandos de ejecución |
+| [docs/architecture.md](docs/architecture.md) | Stack técnico, diagramas de interacción entre componentes, referencia de la API y modelo de datos |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Errores conocidos y sus soluciones verificadas |

@@ -1,120 +1,120 @@
-# Deployment Guide
+# Guía de Despliegue
 
-This document describes the requirements and commands needed to run the Tienda Prado system locally in a development environment.
+Este documento describe los requisitos y comandos necesarios para ejecutar el sistema Tienda Prado localmente en un entorno de desarrollo.
 
 ---
 
-## System Requirements
+## Requisitos del Sistema
 
-| Dependency | Minimum Version | Purpose |
+| Dependencia | Versión mínima | Propósito |
 |---|---|---|
-| Node.js | v20 LTS | Runtime for backend and build tools |
-| npm | v10 | Package manager |
-| Docker Desktop | v4 | PostgreSQL container |
-| Git | v2.40 | Version control |
+| Node.js | v20 LTS | Runtime para el backend y las herramientas de build |
+| npm | v10 | Gestor de paquetes |
+| Docker Desktop | v4 | Contenedor de PostgreSQL |
+| Git | v2.40 | Control de versiones |
 
 ---
 
-## Installation
+## Instalación
 
-### 1. Clone the repository and install dependencies
+### 1. Clonar el repositorio e instalar dependencias
 
 ```bash
 git clone https://github.com/Teodosiodg2002/SSBW-E-Commerce.git
 cd SSBW-E-Commerce
 
-# Backend dependencies
+# Dependencias del backend
 npm install
 
-# React SPA dependencies
+# Dependencias de la SPA en React
 cd frontend && npm install && cd ..
 
-# Astro site dependencies
+# Dependencias del sitio Astro
 cd astro-shop && npm install && cd ..
 ```
 
-### 2. Environment variables
+### 2. Variables de entorno
 
-Create a `.env` file in the project root. Use the following as a reference:
+Crea un archivo `.env` en la raíz del proyecto. Usa el siguiente ejemplo como referencia:
 
 ```dotenv
 DATABASE_URL="postgresql://postgres:password@localhost:5433/tiendaprado"
-SESSION_SECRET="your-session-secret"
-SECRET_KEY="your-jwt-secret"
+SESSION_SECRET="tu-secreto-de-sesion"
+SECRET_KEY="tu-secreto-jwt"
 PORT=3000
 ```
 
-> The `DATABASE_URL` port must be `5433`, which is the host port mapped to the PostgreSQL container.
+> El puerto en `DATABASE_URL` debe ser `5433`, que es el puerto del host mapeado al contenedor de PostgreSQL.
 
 ---
 
-## Database
+## Base de Datos
 
-### Start the PostgreSQL container
+### Iniciar el contenedor de PostgreSQL
 
 ```bash
 docker compose up -d
 ```
 
-The `docker-compose.yml` uses the `postgres:16-alpine` image, which is pinned to version 16 to ensure data format compatibility. Using the unversioned `postgres:alpine` tag risks data corruption when Docker pulls a newer major version automatically.
+El `docker-compose.yml` utiliza la imagen `postgres:16-alpine`, fijada a la versión 16 para garantizar la compatibilidad del formato de datos. Usar el tag `postgres:alpine` sin versión puede corromper los datos cuando Docker descarga automáticamente una versión mayor más nueva.
 
-### Run migrations
+### Ejecutar las migraciones
 
 ```bash
 npx prisma migrate dev
 ```
 
-### Seed the database
+### Sembrar la base de datos
 
 ```bash
-# Load products (115 items from Museo del Prado)
+# Cargar productos (115 artículos del Museo del Prado)
 npm run seed
 
-# Create demo users
+# Crear usuarios de demostración
 npm run usuarios
 ```
 
 ---
 
-## Running the System
+## Ejecución del Sistema
 
-The system consists of three independent processes. Each requires a separate terminal.
+El sistema consta de tres procesos independientes. Cada uno requiere una terminal separada.
 
 ### Terminal 1 — Backend (Express + Prisma)
 
 ```bash
 npm run dev
-# Listens on http://localhost:3000
+# Escucha en http://localhost:3000
 ```
 
-### Terminal 2 — React SPA (Vite)
+### Terminal 2 — SPA en React (Vite)
 
 ```bash
 cd frontend
 npm run dev
-# Listens on http://localhost:5173 or 5174
+# Escucha en http://localhost:5173 o 5174
 ```
 
-### Terminal 3 — Astro Static Site
+### Terminal 3 — Sitio Estático en Astro
 
 ```bash
 cd astro-shop
 npm run dev
-# Listens on http://localhost:4321
+# Escucha en http://localhost:4321
 ```
 
 ---
 
-## Testing
+## Tests
 
-### Backend tests (Vitest + Supertest)
+### Tests del backend (Vitest + Supertest)
 
 ```bash
 npm test
-# Runs tests in the /tests directory against the live Express app
+# Ejecuta los tests del directorio /tests contra la app Express activa
 ```
 
-### Frontend tests (Vitest + Testing Library)
+### Tests del frontend (Vitest + Testing Library)
 
 ```bash
 cd frontend
@@ -123,17 +123,17 @@ npm test
 
 ---
 
-## Production Build
+## Build de Producción
 
-To verify the Astro site compiles without errors:
+Para verificar que el sitio Astro compila sin errores:
 
 ```bash
 cd astro-shop
 npm run build
-# Output in astro-shop/dist/
+# Salida en astro-shop/dist/
 ```
 
-Type checking for Astro files:
+Verificación de tipos para archivos Astro:
 
 ```bash
 cd astro-shop
