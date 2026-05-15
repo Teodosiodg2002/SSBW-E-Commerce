@@ -21,7 +21,7 @@ const SECRET_KEY = process.env.SECRET_KEY ?? 'dev-secret-prado';
 nunjucks.configure('views', { autoescape: true, express: app, watch: true });
 
 // Middlewares
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'] }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:4321'] }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
