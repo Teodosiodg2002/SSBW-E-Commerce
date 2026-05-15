@@ -7,9 +7,10 @@ const router = express.Router();
 
 /**
  * GET /api/carrito
+ * GET /carrito
  * Devuelve el contenido completo del carrito con detalles de productos.
  */
-router.get('/api/carrito', async (req, res) => {
+router.get('/carrito', async (req, res) => {
     const carrito_sesion = req.session.carrito ?? [];
     
     if (carrito_sesion.length === 0) {
@@ -55,9 +56,10 @@ router.get('/api/carrito', async (req, res) => {
 
 /**
  * DELETE /api/carrito/:id
+ * DELETE /carrito/:id
  * Elimina un producto del carrito y devuelve el nuevo estado.
  */
-router.delete('/api/carrito/:id', (req, res) => {
+router.delete('/carrito/:id', (req, res) => {
     const id = Number(req.params.id);
     if (req.session.carrito) {
         req.session.carrito = req.session.carrito.filter(i => i.id !== id);

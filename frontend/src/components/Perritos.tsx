@@ -22,18 +22,18 @@ const Perritos = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-6 border-2 border-gray-200 rounded-3xl shadow-lg bg-white max-w-sm">
-      <h2 className="text-xl font-bold mb-4 text-blue-600">Perrito Aleatorio</h2>
-      <div className="w-64 h-64 flex items-center justify-center bg-gray-100 rounded-2xl overflow-hidden mb-4">
+    <div className="flex flex-col items-center p-6 border-2 border-base-200 rounded-3xl shadow-lg bg-base-100 max-w-sm">
+      <h2 className="text-xl font-bold mb-4 text-secondary font-montserrat">Perrito Aleatorio</h2>
+      <div className="w-64 h-64 flex items-center justify-center bg-base-200 rounded-2xl overflow-hidden mb-4">
         {loading ? (
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
         ) : (
           <img src={imageUrl!} alt="Perrito" className="object-cover w-full h-full" />
         )}
       </div>
       <button 
         onClick={fetchDog}
-        className="font-bold cursor-pointer bg-blue-500 p-4 rounded-2xl hover:bg-blue-600 text-white transition-colors"
+        className="btn btn-secondary"
       >
         ¡Otro perrito! <span> 🐶 </span>
       </button>

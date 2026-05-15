@@ -21,7 +21,7 @@ const SECRET_KEY = process.env.SECRET_KEY ?? 'dev-secret-prado';
 nunjucks.configure('views', { autoescape: true, express: app, watch: true });
 
 // Middlewares
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:4321'] }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -50,8 +50,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// Carrito: enriquece los datos de la sesion con info de la BD
+// Carrito: enriquece los datos de la sesion con info de la BD (Solo para vistas Nunjucks)
 app.use(async (req, res, next) => {
+    if (req.path.startsWith('/api')) return next(); // Optimizacion: Ignorar API
+
     const carrito_sesion = req.session.carrito ?? [];
     res.locals.total_carrito = req.session.total_carrito ?? 0;
 
@@ -93,9 +95,25 @@ app.use('/public/imagenes', express.static('imagenes'));
 // Rutas
 app.use('/', UsuariosRouter);
 app.use('/', ProductosRouter);
-app.use('/', ApiRouter);
-app.use('/', CarritoRouter);
+app.use('/api', ApiRouter); // API aislada
+app.use('/api', CarritoRouter); // Carrito AJAX aislado
 
-app.listen(PORT, () => {
-    logger.info(`Servidor en http://localhost:${PORT}`);
+
+// Manejo global de errores (Debe ser el ultimo middleware)
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    logger.error(`Error no capturado: ${err.message}`, { stack: err.stack });
+    
+    if (req.path.startsWith('/api')) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+        res.status(500).send('<h2>Error Interno del Servidor</h2><p>Por favor, inténtelo de nuevo más tarde.</p>');
+    }
 });
+
+export default app;
+
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        logger.info(`Servidor en http://localhost:${PORT}`);
+    });
+}

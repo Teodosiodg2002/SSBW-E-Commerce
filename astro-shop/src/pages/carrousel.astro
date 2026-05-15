@@ -1,0 +1,13 @@
+---
+import Carrousel from '../components/Carrousel';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Galería - Tienda Prado Astro">
+	<div class="text-center mb-8">
+		<h1 class="text-4xl font-bold text-primary">Nuestra Galería</h1>
+		<p class="text-base-content/70 mt-2">Componente hidratado con React en una isla de Astro</p>
+	</div>
+	
+	<Carrousel client:load />
+</Layout>

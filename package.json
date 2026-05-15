@@ -10,7 +10,8 @@
     "usuarios": "node --env-file=.env prisma/seeders/registra_usuarios.ts",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "scrap": "node prisma/seeders/scrap-tp.js"
+    "scrap": "node prisma/seeders/scrap-tp.js",
+    "test": "vitest run tests/"
   },
   "author": "",
   "license": "ISC",
@@ -37,9 +38,12 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.0",
     "@types/nunjucks": "^3.2.6",
+    "@types/supertest": "^7.2.0",
     "chokidar": "^3.6.0",
     "dotenv": "^17.3.1",
     "playwright": "^1.58.2",
-    "prisma": "^7.5.0"
+    "prisma": "^7.5.0",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.5"
   }
 }

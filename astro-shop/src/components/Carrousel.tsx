@@ -1,9 +1,9 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useProductList } from '../hooks/useProducts';
-import { Producto } from '../types';
+import type { Producto } from '../types';
 
-const Carrusel = () => {
+const Carrousel = () => {
   const { productos, error, isLoading } = useProductList(10);
   
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
@@ -37,38 +37,44 @@ const Carrusel = () => {
     );
   }
 
-  if (error || productos.length === 0) {
+  if (error) {
     return (
       <div className="alert alert-error max-w-lg mx-auto mt-10 shadow-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>Error al cargar las imágenes del carrusel. Asegúrate de que el servidor (puerto 3000) esté corriendo.</span>
+        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Error al cargar las imágenes. Asegúrate de que el servidor (puerto 3000) esté corriendo y con datos.</span>
+      </div>
+    );
+  }
+
+  if (productos.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[50vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h2 className="text-3xl font-bold text-center mb-8 text-primary font-montserrat">
-        Galería Destacada
-      </h2>
-      
       <div className="relative">
         {/* Carrusel Embla */}
         <div className="overflow-hidden rounded-3xl shadow-2xl bg-base-100" ref={emblaRef}>
           <div className="flex touch-pan-y flex-row h-96">
             {productos.map((prod: Producto) => (
-              <div 
-                key={prod.id} 
+              <div
+                key={prod.id}
                 className="flex-[0_0_100%] min-w-0 relative flex justify-center items-center p-8 bg-base-200"
               >
-                <img 
-                  src={`http://localhost:3000/public/imagenes/${prod.imagen}`} 
-                  alt={prod.titulo} 
+                <img
+                  src={`http://localhost:3000/public/imagenes/${prod.imagen.trim()}`}
+                  alt={prod.título.trim()}
                   className="max-h-full max-w-full object-contain rounded-xl shadow-md transition-transform duration-300 hover:scale-105"
                 />
                 <div className="absolute bottom-4 left-0 right-0 text-center">
                   <div className="inline-block bg-base-100/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border border-base-300">
-                    <p className="font-semibold text-base-content truncate max-w-xs">{prod.titulo}</p>
+                    <p className="font-semibold text-base-content truncate max-w-xs">{prod.título.trim()}</p>
                   </div>
                 </div>
               </div>
@@ -77,14 +83,14 @@ const Carrusel = () => {
         </div>
 
         {/* Botones de Navegación */}
-        <button 
-          onClick={scrollPrev} 
+        <button
+          onClick={scrollPrev}
           className="btn btn-circle btn-primary absolute left-[-20px] top-1/2 -translate-y-1/2 shadow-lg hidden sm:flex"
         >
           ❮
         </button>
-        <button 
-          onClick={scrollNext} 
+        <button
+          onClick={scrollNext}
           className="btn btn-circle btn-primary absolute right-[-20px] top-1/2 -translate-y-1/2 shadow-lg hidden sm:flex"
         >
           ❯
@@ -108,4 +114,4 @@ const Carrusel = () => {
   );
 };
 
-export default Carrusel;
+export default Carrousel;

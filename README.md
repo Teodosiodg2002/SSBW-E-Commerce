@@ -101,11 +101,39 @@ Para ver todo en funcionamiento, necesitas arrancar ambos mundos:
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Proyecto (MVC)
 
-*   `index.ts`: Punto de entrada del servidor.
-*   `routes/`: Lógica de navegación y API.
-*   `prisma/`: Definición de modelos de datos.
-*   `views/`: Plantillas para la tienda clásica.
-*   `frontend/`: Código fuente de la nueva aplicación React.
+El proyecto sigue el patrón **Modelo-Vista-Controlador (MVC)** para una organización profesional:
+
+*   `index.ts`: Punto de entrada del servidor y configuración de middlewares globales.
+*   `controllers/`: Lógica de negocio (Controladores) desacoplada de las rutas.
+*   `routes/`: Definición de endpoints y mapeo a controladores.
+*   `prisma/`: Modelos de datos y scripts de semillado (*seeders*).
+*   `views/`: Plantillas Nunjucks para la tienda clásica (Vistas SSR).
+*   `frontend/`: Código fuente de la SPA en React (Vistas CSR).
+*   `tests/`: Suite de pruebas automatizadas para el backend.
+
+---
+
+## 🧪 Suite de Tests (Garantía de Calidad)
+
+Se ha implementado una suite de pruebas robusta usando **Vitest** y **Supertest** para asegurar la estabilidad del sistema:
+
+*   **Tests de API:** Valida que los endpoints de productos y carrito respondan correctamente.
+*   **Tests de Seguridad:** Verifica la protección de rutas mediante JWT.
+*   **Tests de Frontend:** Pruebas de renderizado y lógica de componentes React.
+
+### Cómo ejecutar los tests:
+*   **Backend:** `npm test` (desde la raíz).
+*   **Frontend:** `cd frontend; npm test`.
+
+---
+
+## 🚀 Optimización "Clean Code 2026"
+El proyecto ha sido estabilizado bajo estándares modernos:
+*   **Aislamiento de API:** Todas las rutas REST están bajo el prefijo `/api` de forma estricta.
+*   **Performance:** El middleware del carrito ha sido optimizado para ignorar peticiones de API, reduciendo la latencia y carga en la BD.
+*   **Tipado Estricto:** Eliminación de tipos `any` en favor de interfaces TypeScript robustas.
+*   **Manejo de Errores:** Implementación de un *Global Error Handler* que centraliza fallos y evita caídas del servidor.
+
 
